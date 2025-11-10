@@ -38,3 +38,25 @@ export type FilterParams = {
   completed?: boolean;
   search?: string;
 };
+
+export interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
+  style?: any;
+  testID?: string;
+}
+
+// Add form data types
+export interface TaskFormData {
+  title: string;
+  description: string;
+}
+
+// Add task creation data
+export interface CreateTaskData {
+  title: string;
+  description: string;
+  userId: string;
+}
