@@ -2,10 +2,18 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button } from './Button';
 import type { Meta, StoryObj } from '@storybook/react-native';
+import { StorybookProviders } from '../StorybookProviders';
 
-const meta: Meta<typeof Button> = {
+// Create a wrapper component that provides all necessary contexts
+const ButtonWithProviders = (props: any) => (
+  <StorybookProviders>
+    <Button {...props} />
+  </StorybookProviders>
+);
+
+const meta: Meta<typeof ButtonWithProviders> = {
   title: 'Components/Button',
-  component: Button,
+  component: ButtonWithProviders,
   argTypes: {
     variant: {
       control: { type: 'select' },
@@ -27,7 +35,7 @@ const meta: Meta<typeof Button> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Button>;
+type Story = StoryObj<typeof ButtonWithProviders>;
 
 export const Primary: Story = {
   args: {
@@ -62,17 +70,6 @@ export const LongText: Story = {
   args: {
     title: 'Button with very long text that might wrap',
     variant: 'primary',
-  },
-};
-
-export const CustomStyle: Story = {
-  args: {
-    title: 'Custom Style',
-    variant: 'primary',
-    style: {
-      backgroundColor: 'purple',
-      borderColor: 'purple',
-    },
   },
 };
 

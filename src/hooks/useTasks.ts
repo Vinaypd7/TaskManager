@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Task, PaginationParams, SortParams, FilterParams } from '../types';
-import { useAuth } from './useAuth';
+import { useAuthContext as useAuth } from '../contexts/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { taskService } from '../services/taskService';
 

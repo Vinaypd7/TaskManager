@@ -1,12 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Card } from './Card';
 import type { Meta, StoryObj } from '@storybook/react-native';
+import { StorybookProviders } from '../StorybookProviders';
+import { ThemedText } from './ThemedText';
 import { Button } from './Button';
 
-const meta: Meta<typeof Card> = {
+// Create a wrapper component that provides all necessary contexts
+const CardWithProviders = (props: any) => (
+  <StorybookProviders>
+    <Card {...props} />
+  </StorybookProviders>
+);
+
+const meta: Meta<typeof CardWithProviders> = {
   title: 'Components/Card',
-  component: Card,
+  component: CardWithProviders,
   decorators: [
     (Story) => (
       <View style={styles.container}>
@@ -18,26 +27,30 @@ const meta: Meta<typeof Card> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Card>;
+type Story = StoryObj<typeof CardWithProviders>;
 
 export const Default: Story = {
   render: (args) => (
-    <Card {...args}>
-      <Text style={styles.cardTitle}>Default Card</Text>
-      <Text style={styles.cardContent}>
+    <CardWithProviders {...args}>
+      <ThemedText size="lg" weight="semibold">
+        Default Card
+      </ThemedText>
+      <ThemedText variant="secondary">
         This is a basic card component with default styling.
-      </Text>
-    </Card>
+      </ThemedText>
+    </CardWithProviders>
   ),
 };
 
 export const WithButtons: Story = {
   render: (args) => (
-    <Card {...args}>
-      <Text style={styles.cardTitle}>Card with Actions</Text>
-      <Text style={styles.cardContent}>
+    <CardWithProviders {...args}>
+      <ThemedText size="lg" weight="semibold">
+        Card with Actions
+      </ThemedText>
+      <ThemedText variant="secondary">
         This card contains interactive elements like buttons.
-      </Text>
+      </ThemedText>
       <View style={styles.buttonContainer}>
         <Button
           title="Primary Action"
@@ -52,37 +65,7 @@ export const WithButtons: Story = {
           style={styles.button}
         />
       </View>
-    </Card>
-  ),
-};
-
-export const CustomStyled: Story = {
-  render: (args) => (
-    <Card style={styles.customCard}>
-      <Text style={styles.cardTitle}>Custom Styled Card</Text>
-      <Text style={styles.cardContent}>
-        This card has custom background color and border.
-      </Text>
-    </Card>
-  ),
-};
-
-export const MultipleCards: Story = {
-  render: (args) => (
-    <View style={styles.multipleContainer}>
-      <Card style={styles.smallCard}>
-        <Text style={styles.cardTitle}>Card 1</Text>
-        <Text style={styles.cardContent}>First card in a list</Text>
-      </Card>
-      <Card style={styles.smallCard}>
-        <Text style={styles.cardTitle}>Card 2</Text>
-        <Text style={styles.cardContent}>Second card in a list</Text>
-      </Card>
-      <Card style={styles.smallCard}>
-        <Text style={styles.cardTitle}>Card 3</Text>
-        <Text style={styles.cardContent}>Third card in a list</Text>
-      </Card>
-    </View>
+    </CardWithProviders>
   ),
 };
 
@@ -91,21 +74,6 @@ const styles = StyleSheet.create({
     padding: 16,
     width: '100%',
   },
-  multipleContainer: {
-    gap: 12,
-    width: '100%',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333',
-  },
-  cardContent: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-  },
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
@@ -113,13 +81,5 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-  },
-  customCard: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#2196f3',
-    borderWidth: 1,
-  },
-  smallCard: {
-    marginVertical: 0,
   },
 });

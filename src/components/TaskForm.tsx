@@ -2,19 +2,19 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { Button } from './shared/Button';
-import { Card } from './shared/Card';
-
-interface TaskFormData {
-  title: string;
-  description: string;
-}
+import { ThemedCard } from './shared/ThemedCard';
+import { ThemedText } from './shared/ThemedText';
+import { useTranslation } from '../hooks/useTranslation';
+import { useTheme } from '../contexts/ThemeContext';
+import { TaskFormData } from '../types';
 
 interface TaskFormProps {
   onSubmit: (data: TaskFormData) => Promise<void>;
   initialData?: TaskFormData;
   loading?: boolean;
+  onCancel?: () => void;
 }
 
 const schema = yup.object({
@@ -26,7 +26,11 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   onSubmit,
   initialData,
   loading = false,
+  onCancel,
 }) => {
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  
   const {
     control,
     handleSubmit,
@@ -41,36 +45,86 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   const title = watch('title');
   const description = watch('description');
 
+  const handleFormSubmit = async (data: TaskFormData) => {
+    try {
+      await onSubmit(data);
+      // Reset form after successful submission if no initial data (meaning it's a new task)
+      if (!initialData) {
+        setValue('title', '');
+        setValue('description', '');
+      }
+    } catch (error) {
+      // Error handling is done in the parent component
+    }
+  };
+
   return (
-    <Card>
+    <ThemedCard>
       <View style={styles.form}>
         <TextInput
-          style={[styles.input, errors.title && styles.inputError]}
-          placeholder="Task title"
+          style={[
+            styles.input,
+            { 
+              backgroundColor: theme.colors.background.primary,
+              borderColor: errors.title ? theme.colors.error[500] : theme.colors.border.primary,
+              color: theme.colors.text.primary,
+            }
+          ]}
+          placeholder={t('tasks.taskTitle')}
+          placeholderTextColor={theme.colors.text.tertiary}
           value={title}
           onChangeText={text => setValue('title', text)}
+          editable={!loading}
         />
-        {errors.title && <Text style={styles.errorText}>{errors.title.message}</Text>}
+        {errors.title && (
+          <ThemedText variant="error" size="sm" style={styles.errorText}>
+            {errors.title.message}
+          </ThemedText>
+        )}
 
         <TextInput
-          style={[styles.input, styles.textArea, errors.description && styles.inputError]}
-          placeholder="Task description"
+          style={[
+            styles.input,
+            styles.textArea,
+            { 
+              backgroundColor: theme.colors.background.primary,
+              borderColor: errors.description ? theme.colors.error[500] : theme.colors.border.primary,
+              color: theme.colors.text.primary,
+            }
+          ]}
+          placeholder={t('tasks.taskDescription')}
+          placeholderTextColor={theme.colors.text.tertiary}
           value={description}
           onChangeText={text => setValue('description', text)}
           multiline
           numberOfLines={3}
+          editable={!loading}
         />
         {errors.description && (
-          <Text style={styles.errorText}>{errors.description.message}</Text>
+          <ThemedText variant="error" size="sm" style={styles.errorText}>
+            {errors.description.message}
+          </ThemedText>
         )}
 
-        <Button
-          title={loading ? 'Submitting...' : 'Submit Task'}
-          onPress={handleSubmit(onSubmit)}
-          disabled={loading}
-        />
+        <View style={styles.buttonContainer}>
+          {onCancel && (
+            <Button
+              title={t('common.cancel')}
+              onPress={onCancel}
+              variant="secondary"
+              style={styles.cancelButton}
+              disabled={loading}
+            />
+          )}
+          <Button
+            title={loading ? t('common.loading') : (initialData ? t('common.save') : t('tasks.addTask'))}
+            onPress={handleSubmit(handleFormSubmit)}
+            disabled={loading}
+            style={styles.submitButton}
+          />
+        </View>
       </View>
-    </Card>
+    </ThemedCard>
   );
 };
 
@@ -80,7 +134,6 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#DDD',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -89,12 +142,17 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
   },
-  inputError: {
-    borderColor: '#FF3B30',
-  },
   errorText: {
-    color: '#FF3B30',
-    fontSize: 14,
     marginTop: -8,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  cancelButton: {
+    flex: 1,
+  },
+  submitButton: {
+    flex: 2,
   },
 });
