@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card Snapshot Tests should match snapshot for basic card 1`] = `null`;
+
+exports[`Card Snapshot Tests should match snapshot for card with custom style 1`] = `null`;
+
+exports[`Card Snapshot Tests should match snapshot for card with multiple children 1`] = `null`;
