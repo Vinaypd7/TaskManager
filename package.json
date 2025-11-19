@@ -17,7 +17,9 @@
     "test:snapshot": "jest --testPathPattern=snapshot",
     "test:snapshot:update": "jest --testPathPattern=snapshot --updateSnapshot",
     "test:update-snapshots": "jest --updateSnapshot",
-    "test:ci": "jest --ci --coverage --maxWorkers=2"
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "lint": "eslint src/**/*.tsx src/**/*.ts",
+    "build": "expo build"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
