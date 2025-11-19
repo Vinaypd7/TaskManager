@@ -24,7 +24,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Task } from '../types';
 import { showAlert } from '../utils/alertHelper';
 import { useErrorHandler } from '../hooks/useErrorHandler';
-// import { useFeatureFlags } from '../hooks/useFeatureFlags';
+import { useFeatureFlags } from '../hooks/useFeatureFlags';
 
 type TasksScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -51,7 +51,7 @@ export const TasksScreen: React.FC = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { handleError } = useErrorHandler(); // Add this
-  // const { isFeatureEnabled } = useFeatureFlags();
+  const { isFeatureEnabled } = useFeatureFlags();
   const { width, height } = useWindowDimensions();
   // Check if screen is wide enough for side-by-side layout
   const isWideScreen = width > height && width > 768; // Landscape or wide screen
@@ -195,6 +195,7 @@ export const TasksScreen: React.FC = () => {
       <View style={{ flex: 1, flexDirection: isWideScreen ? 'row' : 'column' }}>
 
         <View style={isWideScreen ? { flex: 0.5 } : {}}>
+          {isFeatureEnabled('enableTaskSearch') && 
           <ThemedCard style={styles.searchCard}>
             <TextInput
               style={[
@@ -208,7 +209,7 @@ export const TasksScreen: React.FC = () => {
               value={searchQuery}
               onChangeText={handleSearch}
             />
-          </ThemedCard>
+          </ThemedCard>}
 
           {showAddForm ? (
             <TaskForm

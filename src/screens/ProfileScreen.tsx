@@ -17,7 +17,7 @@ import { ThemedView } from '../components/shared/ThemedView';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
 import { showAlert } from '../utils/alertHelper';
-// import { useFeatureFlags } from '../hooks/useFeatureFlags';
+import { useFeatureFlags } from '../hooks/useFeatureFlags';
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -26,7 +26,7 @@ export const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { t, locale, changeLanguage } = useTranslation();
   const { theme, isDark, toggleTheme, themeMode } = useTheme();
-  // const { flags, isFeatureEnabled } = useFeatureFlags();
+  const { flags, isFeatureEnabled } = useFeatureFlags();
 
   const handleLogout = () => {
     showAlert(
@@ -113,6 +113,7 @@ export const ProfileScreen: React.FC = () => {
           </View>
         </ThemedCard>
 
+        {isFeatureEnabled('enablePreferences') && 
         <ThemedCard style={styles.sectionCard}>
           <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
             {t('profile.preferences')}
@@ -137,9 +138,9 @@ export const ProfileScreen: React.FC = () => {
               />
             </View>
           </View>
-        </ThemedCard>
+        </ThemedCard>}
 
-        {/* Dark Mode Section - Always visible now */}
+        {isFeatureEnabled('enableAppearance') && 
         <ThemedCard style={styles.sectionCard}>
           <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
             {t('profile.appearance')}
@@ -161,7 +162,7 @@ export const ProfileScreen: React.FC = () => {
               />
             </View>
           </View>
-        </ThemedCard>
+        </ThemedCard>}
 
         {user?.role === 'ROLE_ADMIN' && (
           <ThemedCard style={styles.sectionCard}>
@@ -199,7 +200,7 @@ export const ProfileScreen: React.FC = () => {
         )}
 
         {/* Feature Flags Section - Commented out for now */}
-        {/* <ThemedCard style={styles.sectionCard}>
+        <ThemedCard style={styles.sectionCard}>
           <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
             {t('profile.featureFlags')}
           </ThemedText>
@@ -225,7 +226,7 @@ export const ProfileScreen: React.FC = () => {
               </View>
             ))}
           </View>
-        </ThemedCard> */}
+        </ThemedCard>
 
         <ThemedCard style={styles.sectionCard}>
           <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
@@ -391,5 +392,11 @@ const styles = StyleSheet.create({
   footer: {
     padding: 20,
     alignItems: 'center',
+  },
+  featureEnabled: {
+    backgroundColor: '#34C75920',
+  },
+  featureDisabled: {
+    backgroundColor: '#FF3B3020',
   },
 });

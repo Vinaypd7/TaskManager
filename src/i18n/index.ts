@@ -40,7 +40,9 @@ const translations = {
       "goBack": "Go Back",
       "page": "Page",
       "of": "of",
-      "deleteConfirm": "Are you sure you want to delete this item?"
+      "deleteConfirm": "Are you sure you want to delete this item?",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
     },
     "auth": {
       "signIn": "Sign In",
@@ -138,7 +140,9 @@ const translations = {
       "goBack": "Volver",
       "page": "Página",
       "of": "de",
-      "deleteConfirm": "¿Estás seguro de que quieres eliminar este elemento?"
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar este elemento?",
+      "enabled": 'Habilitado',
+      "disabled": 'Deshabilitado',
     },
     "auth": {
       "signIn": "Iniciar Sesión",
