@@ -1,4 +1,4 @@
-import { colors, commonColors } from './colors';
+import { colors, commonColors } from "./colors";
 
 // Light theme
 export const lightTheme = {
@@ -113,10 +113,10 @@ export const lightTheme = {
       xxxl: 32,
     },
     weights: {
-      regular: '400',
-      medium: '500',
-      semibold: '600',
-      bold: '700',
+      regular: "400",
+      medium: "500",
+      semibold: "600",
+      bold: "700",
     },
   },
 
@@ -231,4 +231,4 @@ export const darkTheme: typeof lightTheme = {
 };
 
 export type Theme = typeof lightTheme;
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = "light" | "dark";

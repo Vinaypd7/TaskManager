@@ -1,14 +1,14 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
-import { act } from '@testing-library/react-native';
-import { TaskForm } from '../TaskForm';
+import React from "react";
+import renderer from "react-test-renderer";
+import { act } from "@testing-library/react-native";
+import { TaskForm } from "../TaskForm";
 
-jest.mock('../../contexts/ThemeContext', () => {
-  const React = require('react');
+jest.mock("../../contexts/ThemeContext", () => {
+  const React = require("react");
   const { createContext } = React;
   const ThemeContext = createContext({
-    theme: require('../../constants/theme').lightTheme,
-    themeMode: 'light',
+    theme: require("../../constants/theme").lightTheme,
+    themeMode: "light",
     isDark: false,
     toggleTheme: jest.fn(),
     setThemeMode: jest.fn(),
@@ -19,47 +19,48 @@ jest.mock('../../contexts/ThemeContext', () => {
     ThemeContext,
     ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
     useTheme: () => {
-      const context = require('react').useContext(ThemeContext);
+      const context = require("react").useContext(ThemeContext);
       if (context === undefined) {
-        throw new Error('useTheme must be used within a ThemeProvider');
+        throw new Error("useTheme must be used within a ThemeProvider");
       }
       return context;
     },
   };
 });
 
-jest.mock('../../hooks/useTranslation', () => ({
+jest.mock("../../hooks/useTranslation", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
-    locale: 'en',
+    locale: "en",
     changeLanguage: jest.fn(),
     loading: false,
   }),
 }));
 
-describe('TaskForm Snapshot Tests', () => {
-  const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
+describe("TaskForm Snapshot Tests", () => {
+  const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
+    children;
   const mockOnSubmit = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should match snapshot for empty form', () => {
+  it("should match snapshot for empty form", () => {
     let tree: any;
     act(() => {
       tree = renderer
         .create(
           <TestWrapper>
             <TaskForm onSubmit={mockOnSubmit} />
-          </TestWrapper>
+          </TestWrapper>,
         )
         .toJSON();
     });
     expect(tree).toMatchSnapshot();
   });
 
-  it('should match snapshot for form with initial data', () => {
+  it("should match snapshot for form with initial data", () => {
     let tree: any;
     act(() => {
       tree = renderer
@@ -68,43 +69,42 @@ describe('TaskForm Snapshot Tests', () => {
             <TaskForm
               onSubmit={mockOnSubmit}
               initialData={{
-                title: 'Existing Task',
-                description: 'Existing Description',
+                title: "Existing Task",
+                description: "Existing Description",
               }}
             />
-          </TestWrapper>
+          </TestWrapper>,
         )
         .toJSON();
     });
     expect(tree).toMatchSnapshot();
   });
 
-  it('should match snapshot for form with cancel button', () => {
+  it("should match snapshot for form with cancel button", () => {
     let tree: any;
     act(() => {
       tree = renderer
         .create(
           <TestWrapper>
             <TaskForm onSubmit={mockOnSubmit} onCancel={jest.fn()} />
-          </TestWrapper>
+          </TestWrapper>,
         )
         .toJSON();
     });
     expect(tree).toMatchSnapshot();
   });
 
-  it('should match snapshot for loading form', () => {
+  it("should match snapshot for loading form", () => {
     let tree: any;
     act(() => {
       tree = renderer
         .create(
           <TestWrapper>
             <TaskForm onSubmit={mockOnSubmit} loading />
-          </TestWrapper>
+          </TestWrapper>,
         )
         .toJSON();
     });
     expect(tree).toMatchSnapshot();
   });
 });
-

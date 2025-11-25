@@ -2,8 +2,8 @@
 export const featureFlagService = {
   async getFeatureFlags(): Promise<Record<string, boolean>> {
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     return {
       enablePreferences: true,
       enableAppearance: true,

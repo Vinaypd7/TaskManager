@@ -25,6 +25,16 @@ const schema = yup.object({
   description: yup.string().required("Description is required"),
 });
 
+/**
+ * TaskForm
+ *
+ * Controlled form component for creating or editing tasks. Uses
+ * `react-hook-form` with Yup validation. Props:
+ * - `onSubmit`: called with validated `TaskFormData` when the user saves.
+ * - `initialData`: optional initial values for editing an existing task.
+ * - `loading`: disables inputs while submitting.
+ * - `onCancel`: optional cancel callback.
+ */
 export const TaskForm: React.FC<TaskFormProps> = ({
   onSubmit,
   initialData,

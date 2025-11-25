@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { featureFlagService } from '../services/featureFlagService';
+import { useState, useEffect } from "react";
+import { featureFlagService } from "../services/featureFlagService";
 
 export const useFeatureFlags = () => {
   const [flags, setFlags] = useState<Record<string, boolean>>({});
@@ -14,7 +14,7 @@ export const useFeatureFlags = () => {
       const featureFlags = await featureFlagService.getFeatureFlags();
       setFlags(featureFlags);
     } catch (error) {
-      console.error('Failed to load feature flags:', error);
+      console.error("Failed to load feature flags:", error);
     } finally {
       setLoading(false);
     }

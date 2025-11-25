@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TaskForm } from './TaskForm';
-import type { Meta, StoryObj } from '@storybook/react-native';
-import { StorybookProviders } from './StorybookProviders';
-import { showAlert } from '../utils/alertHelper';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { TaskForm } from "./TaskForm";
+import type { Meta, StoryObj } from "@storybook/react-native";
+import { StorybookProviders } from "./StorybookProviders";
+import { showAlert } from "../utils/alertHelper";
 
 // Create a wrapper component that provides all necessary contexts
 const TaskFormWithProviders = (props: any) => (
@@ -13,7 +13,7 @@ const TaskFormWithProviders = (props: any) => (
 );
 
 const meta: Meta<typeof TaskFormWithProviders> = {
-  title: 'Components/TaskForm',
+  title: "Components/TaskForm",
   component: TaskFormWithProviders,
   decorators: [
     (Story) => (
@@ -31,7 +31,10 @@ type Story = StoryObj<typeof TaskFormWithProviders>;
 export const Default: Story = {
   args: {
     onSubmit: async (data) => {
-      showAlert('Form Submitted', `Title: ${data.title}\nDescription: ${data.description}`);
+      showAlert(
+        "Form Submitted",
+        `Title: ${data.title}\nDescription: ${data.description}`,
+      );
     },
     loading: false,
   },
@@ -40,11 +43,14 @@ export const Default: Story = {
 export const WithInitialData: Story = {
   args: {
     onSubmit: async (data) => {
-      showAlert('Form Submitted', `Title: ${data.title}\nDescription: ${data.description}`);
+      showAlert(
+        "Form Submitted",
+        `Title: ${data.title}\nDescription: ${data.description}`,
+      );
     },
     initialData: {
-      title: 'Existing Task',
-      description: 'This is an existing task description',
+      title: "Existing Task",
+      description: "This is an existing task description",
     },
     loading: false,
   },
@@ -54,8 +60,11 @@ export const LoadingState: Story = {
   args: {
     onSubmit: async (data) => {
       // Simulate slow submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      showAlert('Form Submitted', `Title: ${data.title}\nDescription: ${data.description}`);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      showAlert(
+        "Form Submitted",
+        `Title: ${data.title}\nDescription: ${data.description}`,
+      );
     },
     loading: true,
   },
@@ -64,9 +73,12 @@ export const LoadingState: Story = {
 export const WithCancel: Story = {
   args: {
     onSubmit: async (data) => {
-      showAlert('Form Submitted', `Title: ${data.title}\nDescription: ${data.description}`);
+      showAlert(
+        "Form Submitted",
+        `Title: ${data.title}\nDescription: ${data.description}`,
+      );
     },
-    onCancel: () => showAlert('Cancelled', 'Form cancellation pressed'),
+    onCancel: () => showAlert("Cancelled", "Form cancellation pressed"),
     loading: false,
   },
 };
@@ -74,6 +86,6 @@ export const WithCancel: Story = {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    width: '100%',
+    width: "100%",
   },
 });

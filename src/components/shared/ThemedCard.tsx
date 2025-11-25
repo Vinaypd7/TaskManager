@@ -1,13 +1,19 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
+import React from "react";
+import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface ThemedCardProps {
   children: React.ReactNode;
   elevated?: boolean;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * ThemedCard
+ *
+ * Card wrapper that applies theme-aware background, border radius and
+ * elevation. Accepts an `elevated` flag to toggle stronger shadow styles.
+ */
 export const ThemedCard: React.FC<ThemedCardProps> = ({
   children,
   elevated = false,
@@ -20,8 +26,8 @@ export const ThemedCard: React.FC<ThemedCardProps> = ({
       style={[
         styles.card,
         {
-          backgroundColor: elevated 
-            ? theme.colors.surface.cardElevated 
+          backgroundColor: elevated
+            ? theme.colors.surface.cardElevated
             : theme.colors.surface.card,
           borderRadius: theme.borderRadius.md,
           ...(elevated ? theme.shadows.md : theme.shadows.sm),

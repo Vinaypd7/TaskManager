@@ -10,6 +10,12 @@ import { ButtonProps } from "../../types";
 import { useTheme } from "../../contexts/ThemeContext";
 import { ThemedText } from "./ThemedText";
 
+/**
+ * Button
+ *
+ * A themed, accessible button component that supports primary/secondary
+ * variants, disabled state, and platform-specific touchables.
+ */
 export const Button: React.FC<ButtonProps> = ({
   title,
   onPress,

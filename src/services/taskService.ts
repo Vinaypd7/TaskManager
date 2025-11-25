@@ -1,25 +1,35 @@
-import { Task, CreateTaskData } from '../types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Task, CreateTaskData } from "../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const TASKS_STORAGE_KEY = 'user_tasks';
+const TASKS_STORAGE_KEY = "user_tasks";
 
+/**
+ * taskService
+ *
+ * Simple local persistence layer for tasks using AsyncStorage. Provides
+ * CRUD helpers to fetch and modify tasks stored on-device. Intended for
+ * demo/local usage; swap with a remote API implementation as needed.
+ */
 export const taskService = {
   async getUserTasks(userId: string): Promise<Task[]> {
     try {
       const storedTasks = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
       const allTasks: Task[] = storedTasks ? JSON.parse(storedTasks) : [];
-      
+
       // Filter tasks by user ID and parse dates
       return allTasks
-        .filter(task => task.userId === userId)
-        .map(task => ({
+        .filter((task) => task.userId === userId)
+        .map((task) => ({
           ...task,
           createdAt: new Date(task.createdAt),
           updatedAt: new Date(task.updatedAt),
         }))
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
     } catch (error) {
-      console.error('Failed to get user tasks:', error);
+      console.error("Failed to get user tasks:", error);
       return [];
     }
   },
@@ -28,7 +38,7 @@ export const taskService = {
     try {
       const storedTasks = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
       const allTasks: Task[] = storedTasks ? JSON.parse(storedTasks) : [];
-      
+
       const newTask: Task = {
         id: Date.now().toString(),
         title: taskData.title,
@@ -44,8 +54,8 @@ export const taskService = {
 
       return newTask;
     } catch (error) {
-      console.error('Failed to create task:', error);
-      throw new Error('Failed to create task');
+      console.error("Failed to create task:", error);
+      throw new Error("Failed to create task");
     }
   },
 
@@ -53,10 +63,10 @@ export const taskService = {
     try {
       const storedTasks = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
       const allTasks: Task[] = storedTasks ? JSON.parse(storedTasks) : [];
-      
-      const taskIndex = allTasks.findIndex(task => task.id === taskId);
+
+      const taskIndex = allTasks.findIndex((task) => task.id === taskId);
       if (taskIndex === -1) {
-        throw new Error('Task not found');
+        throw new Error("Task not found");
       }
 
       const updatedTask: Task = {
@@ -70,8 +80,8 @@ export const taskService = {
 
       return updatedTask;
     } catch (error) {
-      console.error('Failed to update task:', error);
-      throw new Error('Failed to update task');
+      console.error("Failed to update task:", error);
+      throw new Error("Failed to update task");
     }
   },
 
@@ -79,12 +89,15 @@ export const taskService = {
     try {
       const storedTasks = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
       const allTasks: Task[] = storedTasks ? JSON.parse(storedTasks) : [];
-      
-      const filteredTasks = allTasks.filter(task => task.id !== taskId);
-      await AsyncStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(filteredTasks));
+
+      const filteredTasks = allTasks.filter((task) => task.id !== taskId);
+      await AsyncStorage.setItem(
+        TASKS_STORAGE_KEY,
+        JSON.stringify(filteredTasks),
+      );
     } catch (error) {
-      console.error('Failed to delete task:', error);
-      throw new Error('Failed to delete task');
+      console.error("Failed to delete task:", error);
+      throw new Error("Failed to delete task");
     }
   },
 };

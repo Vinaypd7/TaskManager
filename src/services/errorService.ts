@@ -1,10 +1,16 @@
-import { AppError } from '../types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppError } from "../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ERRORS_STORAGE_KEY = 'app_errors';
+const ERRORS_STORAGE_KEY = "app_errors";
 
+/**
+ * errorService
+ *
+ * Minimal error logging service that stores errors in AsyncStorage.
+ * Used by the app to persist error reports for debugging or dev review.
+ */
 export const errorService = {
-  async logError(errorData: Omit<AppError, 'id' | 'timestamp'>): Promise<void> {
+  async logError(errorData: Omit<AppError, "id" | "timestamp">): Promise<void> {
     try {
       const errors = await this.getStoredErrors();
       const newError: AppError = {
@@ -12,11 +18,11 @@ export const errorService = {
         id: Date.now().toString(),
         timestamp: new Date(),
       };
-      
+
       errors.push(newError);
       await AsyncStorage.setItem(ERRORS_STORAGE_KEY, JSON.stringify(errors));
     } catch (error) {
-      console.error('Failed to log error:', error);
+      console.error("Failed to log error:", error);
     }
   },
 
@@ -25,7 +31,7 @@ export const errorService = {
       const stored = await AsyncStorage.getItem(ERRORS_STORAGE_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.error('Failed to get stored errors:', error);
+      console.error("Failed to get stored errors:", error);
       return [];
     }
   },
@@ -34,7 +40,7 @@ export const errorService = {
     try {
       await AsyncStorage.removeItem(ERRORS_STORAGE_KEY);
     } catch (error) {
-      console.error('Failed to clear errors:', error);
+      console.error("Failed to clear errors:", error);
     }
   },
 };

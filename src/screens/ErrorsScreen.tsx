@@ -1,40 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Alert,
-  RefreshControl,
-} from 'react-native';
-import { useAuthContext as useAuth } from '../contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/types';
-import { Button } from '../components/shared/Button';
-import { ThemedCard } from '../components/shared/ThemedCard';
-import { ThemedText } from '../components/shared/ThemedText';
-import { ThemedView } from '../components/shared/ThemedView';
-import { useTranslation } from '../hooks/useTranslation';
-import { useTheme } from '../contexts/ThemeContext';
-import { errorService } from '../services/errorService';
-import { AppError } from '../types';
-import { showAlert } from '../utils/alertHelper';
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
+import { useAuthContext as useAuth } from "../contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigation/types";
+import { Button } from "../components/shared/Button";
+import { ThemedCard } from "../components/shared/ThemedCard";
+import { ThemedText } from "../components/shared/ThemedText";
+import { ThemedView } from "../components/shared/ThemedView";
+import { useTranslation } from "../hooks/useTranslation";
+import { useTheme } from "../contexts/ThemeContext";
+import { errorService } from "../services/errorService";
+import { AppError } from "../types";
+import { showAlert } from "../utils/alertHelper";
 
-type ErrorsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
+type ErrorsScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Main"
+>;
 
 export const ErrorsScreen: React.FC = () => {
-  const [errors, setErrors] = useState<AppError[]>([]); 
-  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState<AppError[]>([]);
+  const [, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
-  const { user, isAdmin } = useAuth();
+
+  const { isAdmin } = useAuth();
   const navigation = useNavigation<ErrorsScreenNavigationProp>();
   const { t } = useTranslation();
   const { theme } = useTheme();
 
   useEffect(() => {
     if (!isAdmin) {
-      navigation.navigate('Tasks');
+      navigation.navigate("Tasks");
       return;
     }
     loadErrors();
@@ -45,7 +42,7 @@ export const ErrorsScreen: React.FC = () => {
       const errorLogs = await errorService.getStoredErrors();
       setErrors(errorLogs);
     } catch (error) {
-      console.error('Failed to load errors:', error);
+      console.error("Failed to load errors:", error);
     } finally {
       setLoading(false);
     }
@@ -58,27 +55,23 @@ export const ErrorsScreen: React.FC = () => {
   };
 
   const handleClearErrors = () => {
-    showAlert(
-      t('errors.clearErrors'),
-      t('errors.clearConfirmation'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('errors.clear'),
-          style: 'destructive',
-          onPress: clearAllErrors,
-        },
-      ]
-    );
+    showAlert(t("errors.clearErrors"), t("errors.clearConfirmation"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("errors.clear"),
+        style: "destructive",
+        onPress: clearAllErrors,
+      },
+    ]);
   };
 
   const clearAllErrors = async () => {
     try {
       await errorService.clearErrors();
       setErrors([]);
-      showAlert(t('common.success'), t('errors.clearedSuccess'));
+      showAlert(t("common.success"), t("errors.clearedSuccess"));
     } catch (error) {
-      showAlert(t('common.error'), t('errors.clearError'));
+      showAlert(t("common.error"), t("errors.clearError"));
     }
   };
 
@@ -89,9 +82,9 @@ export const ErrorsScreen: React.FC = () => {
   };
 
   const getStatusText = (statusCode: number) => {
-    if (statusCode >= 500) return t('errors.serverError');
-    if (statusCode >= 400) return t('errors.clientError');
-    return t('errors.info');
+    if (statusCode >= 500) return t("errors.serverError");
+    if (statusCode >= 400) return t("errors.clientError");
+    return t("errors.info");
   };
 
   const renderErrorItem = ({ item }: { item: AppError }) => (
@@ -115,15 +108,18 @@ export const ErrorsScreen: React.FC = () => {
           {new Date(item.timestamp).toLocaleString()}
         </ThemedText>
       </View>
-      
-      <ThemedText style={styles.errorMessage}>
-        {item.message}
-      </ThemedText>
-      
-      <View style={[styles.errorMeta, { backgroundColor: theme.colors.background.secondary }]}>
+
+      <ThemedText style={styles.errorMessage}>{item.message}</ThemedText>
+
+      <View
+        style={[
+          styles.errorMeta,
+          { backgroundColor: theme.colors.background.secondary },
+        ]}
+      >
         <View style={styles.metaItem}>
           <ThemedText variant="secondary" size="xs" style={styles.metaLabel}>
-            {t('errors.route')}:
+            {t("errors.route")}:
           </ThemedText>
           <ThemedText size="xs" style={styles.metaValue}>
             {item.route}
@@ -131,7 +127,7 @@ export const ErrorsScreen: React.FC = () => {
         </View>
         <View style={styles.metaItem}>
           <ThemedText variant="secondary" size="xs" style={styles.metaLabel}>
-            {t('errors.userId')}:
+            {t("errors.userId")}:
           </ThemedText>
           <ThemedText size="xs" style={styles.metaValue}>
             {item.userId}
@@ -144,15 +140,20 @@ export const ErrorsScreen: React.FC = () => {
   if (!isAdmin) {
     return (
       <ThemedView style={styles.centered}>
-        <ThemedText variant="error" size="xl" weight="bold" style={styles.accessDeniedText}>
-          {t('errors.accessDenied')}
+        <ThemedText
+          variant="error"
+          size="xl"
+          weight="bold"
+          style={styles.accessDeniedText}
+        >
+          {t("errors.accessDenied")}
         </ThemedText>
         <ThemedText variant="secondary" style={styles.accessDeniedSubtext}>
-          {t('errors.adminOnly')}
+          {t("errors.adminOnly")}
         </ThemedText>
         <Button
-          title={t('errors.goToTasks')}
-          onPress={() => navigation.navigate('Tasks')}
+          title={t("errors.goToTasks")}
+          onPress={() => navigation.navigate("Tasks")}
           style={styles.backButton}
         />
       </ThemedView>
@@ -161,17 +162,22 @@ export const ErrorsScreen: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <View style={[styles.header, { backgroundColor: theme.colors.background.primary }]}>
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: theme.colors.background.primary },
+        ]}
+      >
         <ThemedText size="xxxl" weight="bold">
-          {t('errors.title')}
+          {t("errors.title")}
         </ThemedText>
         <ThemedText variant="secondary">
-          {t('errors.totalErrors', { count: errors.length })}
+          {t("errors.totalErrors", { count: errors.length })}
         </ThemedText>
-        
+
         {errors.length > 0 && (
           <Button
-            title={t('errors.clearAll')}
+            title={t("errors.clearAll")}
             onPress={handleClearErrors}
             variant="secondary"
             style={styles.clearButton}
@@ -180,12 +186,15 @@ export const ErrorsScreen: React.FC = () => {
       </View>
 
       <FlatList
-        data={errors.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())}
+        data={errors.sort(
+          (a, b) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+        )}
         renderItem={renderErrorItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
+          <RefreshControl
+            refreshing={refreshing}
             onRefresh={handleRefresh}
             colors={[theme.colors.primary[500]]}
             tintColor={theme.colors.primary[500]}
@@ -194,10 +203,10 @@ export const ErrorsScreen: React.FC = () => {
         ListEmptyComponent={
           <ThemedCard style={styles.emptyCard}>
             <ThemedText variant="secondary" size="lg" style={styles.emptyText}>
-              {t('errors.noErrors')}
+              {t("errors.noErrors")}
             </ThemedText>
             <ThemedText variant="tertiary" style={styles.emptySubtext}>
-              {t('errors.noErrorsDescription')}
+              {t("errors.noErrorsDescription")}
             </ThemedText>
           </ThemedCard>
         }
@@ -213,17 +222,17 @@ const styles = StyleSheet.create({
   },
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   accessDeniedText: {
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   accessDeniedSubtext: {
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   header: {
     padding: 20,
@@ -231,7 +240,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   clearButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   listContent: {
     paddingBottom: 20,
@@ -241,14 +250,14 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   errorHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   statusIndicator: {
     width: 8,
@@ -260,7 +269,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   statusText: {
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   errorMessage: {
@@ -272,7 +281,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   metaItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 4,
   },
   metaLabel: {
@@ -283,15 +292,15 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     margin: 16,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 40,
   },
   emptyText: {
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   emptySubtext: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   backButton: {
     marginTop: 16,

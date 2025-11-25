@@ -1,11 +1,18 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Task, PaginationParams, SortParams, FilterParams } from '../types';
-import { useAuthContext as useAuth } from '../contexts/AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { taskService } from '../services/taskService';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Task, PaginationParams, SortParams, FilterParams } from "../types";
+import { useAuthContext as useAuth } from "../contexts/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { taskService } from "../services/taskService";
 
-const FILTERS_STORAGE_KEY = 'task_filters';
+const FILTERS_STORAGE_KEY = "task_filters";
 
+/**
+ * useTasks
+ *
+ * Hook that loads and manages tasks for the current user. Provides
+ * paginated, filtered and sorted task lists and actions to add/update/delete
+ * tasks. Persists some UI filters to AsyncStorage.
+ */
 export const useTasks = () => {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -15,8 +22,8 @@ export const useTasks = () => {
     limit: 5,
   });
   const [sort, setSort] = useState<SortParams>({
-    field: 'createdAt',
-    direction: 'desc',
+    field: "createdAt",
+    direction: "desc",
   });
   const [filters, setFilters] = useState<FilterParams>({});
 
@@ -32,86 +39,94 @@ export const useTasks = () => {
         setFilters(JSON.parse(storedFilters));
       }
     } catch (error) {
-      console.error('Failed to load filters:', error);
+      console.error("Failed to load filters:", error);
     }
   };
 
   const saveFilters = async (newFilters: FilterParams) => {
     try {
-      await AsyncStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
+      await AsyncStorage.setItem(
+        FILTERS_STORAGE_KEY,
+        JSON.stringify(newFilters),
+      );
     } catch (error) {
-      console.error('Failed to save filters:', error);
+      console.error("Failed to save filters:", error);
     }
   };
 
   const loadTasks = useCallback(async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
       const userTasks = await taskService.getUserTasks(user.id);
       setTasks(userTasks);
     } catch (error) {
-      console.error('Failed to load tasks:', error);
+      console.error("Failed to load tasks:", error);
     } finally {
       setLoading(false);
     }
   }, [user?.id]);
 
-  const addTask = useCallback(async (title: string, description: string) => {
-    if (!user) return;
-    
-    try {
+  const addTask = useCallback(
+    async (title: string, description: string) => {
+      if (!user) return;
+
       const newTask = await taskService.createTask({
         title,
         description,
         userId: user.id,
       });
-      setTasks(prev => [newTask, ...prev]);
-    } catch (error) {
-      throw error;
-    }
-  }, [user?.id]);
+      setTasks((prev) => [newTask, ...prev]);
+      return newTask;
+    },
+    [user?.id],
+  );
 
-  const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
-    try {
+  const updateTask = useCallback(
+    async (taskId: string, updates: Partial<Task>) => {
       const updatedTask = await taskService.updateTask(taskId, updates);
-      setTasks(prev => prev.map(task => 
-        task.id === taskId ? updatedTask : task
-      ));
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+      setTasks((prev) =>
+        prev.map((task) => (task.id === taskId ? updatedTask : task)),
+      );
+      return updatedTask;
+    },
+    [],
+  );
 
   const deleteTask = useCallback(async (taskId: string) => {
-    try {
-      await taskService.deleteTask(taskId);
-      setTasks(prev => prev.filter(task => task.id !== taskId));
-    } catch (error) {
-      throw error;
-    }
+    await taskService.deleteTask(taskId);
+    setTasks((prev) => prev.filter((task) => task.id !== taskId));
   }, []);
 
-  const toggleTaskCompletion = useCallback(async (taskId: string) => {
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
-      await updateTask(taskId, { completed: !task.completed });
-    }
-  }, [tasks, updateTask]);
+  const toggleTaskCompletion = useCallback(
+    async (taskId: string) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (task) {
+        await updateTask(taskId, { completed: !task.completed });
+      }
+    },
+    [tasks, updateTask],
+  );
 
   // Generic utility function for filtering and sorting
   const useFilteredAndSortedTasks = <T extends Task>(
     items: T[],
     sortConfig: SortParams,
-    filterConfig: FilterParams
+    filterConfig: FilterParams,
   ): T[] => {
     return useMemo(() => {
-      let filtered = items.filter(item => {
-        if (filterConfig.completed !== undefined && item.completed !== filterConfig.completed) {
+      const filtered = items.filter((item) => {
+        if (
+          filterConfig.completed !== undefined &&
+          item.completed !== filterConfig.completed
+        ) {
           return false;
         }
-        if (filterConfig.search && !item.title.toLowerCase().includes(filterConfig.search.toLowerCase())) {
+        if (
+          filterConfig.search &&
+          !item.title.toLowerCase().includes(filterConfig.search.toLowerCase())
+        ) {
           return false;
         }
         return true;
@@ -120,8 +135,8 @@ export const useTasks = () => {
       return filtered.sort((a, b) => {
         const aValue = a[sortConfig.field];
         const bValue = b[sortConfig.field];
-        
-        if (sortConfig.direction === 'asc') {
+
+        if (sortConfig.direction === "asc") {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
         } else {
           return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
@@ -130,16 +145,23 @@ export const useTasks = () => {
     }, [items, sortConfig, filterConfig]);
   };
 
-  const filteredAndSortedTasks = useFilteredAndSortedTasks(tasks, sort, filters);
+  const filteredAndSortedTasks = useFilteredAndSortedTasks(
+    tasks,
+    sort,
+    filters,
+  );
 
   const paginatedTasks = useMemo(() => {
     const startIndex = (pagination.page - 1) * pagination.limit;
-    return filteredAndSortedTasks.slice(startIndex, startIndex + pagination.limit);
+    return filteredAndSortedTasks.slice(
+      startIndex,
+      startIndex + pagination.limit,
+    );
   }, [filteredAndSortedTasks, pagination]);
 
   const updateFilters = useCallback((newFilters: FilterParams) => {
     setFilters(newFilters);
-    setPagination(prev => ({ ...prev, page: 1 }));
+    setPagination((prev) => ({ ...prev, page: 1 }));
     saveFilters(newFilters);
   }, []);
 

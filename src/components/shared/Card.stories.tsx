@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Card } from './Card';
-import type { Meta, StoryObj } from '@storybook/react-native';
-import { StorybookProviders } from '../StorybookProviders';
-import { ThemedText } from './ThemedText';
-import { Button } from './Button';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Card } from "./Card";
+import type { Meta, StoryObj } from "@storybook/react-native";
+import { StorybookProviders } from "../StorybookProviders";
+import { ThemedText } from "./ThemedText";
+import { Button } from "./Button";
 
 // Create a wrapper component that provides all necessary contexts
 const CardWithProviders = (props: any) => (
@@ -14,7 +14,7 @@ const CardWithProviders = (props: any) => (
 );
 
 const meta: Meta<typeof CardWithProviders> = {
-  title: 'Components/Card',
+  title: "Components/Card",
   component: CardWithProviders,
   decorators: [
     (Story) => (
@@ -54,13 +54,13 @@ export const WithButtons: Story = {
       <View style={styles.buttonContainer}>
         <Button
           title="Primary Action"
-          onPress={() => console.log('Primary action')}
+          onPress={() => console.log("Primary action")}
           variant="primary"
           style={styles.button}
         />
         <Button
           title="Secondary Action"
-          onPress={() => console.log('Secondary action')}
+          onPress={() => console.log("Secondary action")}
           variant="secondary"
           style={styles.button}
         />
@@ -72,10 +72,10 @@ export const WithButtons: Story = {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    width: '100%',
+    width: "100%",
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginTop: 16,
   },

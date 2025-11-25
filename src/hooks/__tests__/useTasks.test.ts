@@ -1,9 +1,9 @@
-import { renderHook, waitFor, act } from '@testing-library/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTasks } from '../useTasks';
-import { createTask } from '../../__tests__/__factories__/taskFactory';
-import { createUser } from '../../__tests__/__factories__/userFactory';
-import React from 'react';
+import { renderHook, waitFor, act } from "@testing-library/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTasks } from "../useTasks";
+import { createTask } from "../../__tests__/__factories__/taskFactory";
+import { createUser } from "../../__tests__/__factories__/userFactory";
+import React from "react";
 
 // Mock the auth context
 const mockAuthValue = {
@@ -15,8 +15,8 @@ const mockAuthValue = {
   isAdmin: false,
 };
 
-jest.mock('../../contexts/AuthContext', () => {
-  const React = require('react');
+jest.mock("../../contexts/AuthContext", () => {
+  const React = require("react");
   const { createContext } = React;
   const AuthContext = createContext(mockAuthValue);
 
@@ -27,7 +27,7 @@ jest.mock('../../contexts/AuthContext', () => {
   };
 });
 
-describe('useTasks', () => {
+describe("useTasks", () => {
   beforeEach(() => {
     AsyncStorage.clear();
     jest.clearAllMocks();
@@ -42,10 +42,10 @@ describe('useTasks', () => {
     return React.createElement(React.Fragment, null, children);
   };
 
-  it('should load tasks for user', async () => {
-    const user = createUser({ id: 'user-1' });
-    const task = createTask({ userId: 'user-1' });
-    await AsyncStorage.setItem('user_tasks', JSON.stringify([task]));
+  it("should load tasks for user", async () => {
+    const user = createUser({ id: "user-1" });
+    const task = createTask({ userId: "user-1" });
+    await AsyncStorage.setItem("user_tasks", JSON.stringify([task]));
 
     mockAuthValue.user = user;
     mockAuthValue.isAuthenticated = true;
@@ -59,8 +59,8 @@ describe('useTasks', () => {
     expect(result.current.allTasks).toHaveLength(1);
   });
 
-  it('should add task', async () => {
-    const user = createUser({ id: 'user-1' });
+  it("should add task", async () => {
+    const user = createUser({ id: "user-1" });
     mockAuthValue.user = user;
     mockAuthValue.isAuthenticated = true;
 
@@ -71,7 +71,7 @@ describe('useTasks', () => {
     });
 
     await act(async () => {
-      await result.current.addTask('New Task', 'New Description');
+      await result.current.addTask("New Task", "New Description");
     });
 
     await waitFor(() => {
@@ -79,10 +79,10 @@ describe('useTasks', () => {
     });
   });
 
-  it('should delete task', async () => {
-    const user = createUser({ id: 'user-1' });
-    const task = createTask({ id: 'task-1', userId: 'user-1' });
-    await AsyncStorage.setItem('user_tasks', JSON.stringify([task]));
+  it("should delete task", async () => {
+    const user = createUser({ id: "user-1" });
+    const task = createTask({ id: "task-1", userId: "user-1" });
+    await AsyncStorage.setItem("user_tasks", JSON.stringify([task]));
 
     mockAuthValue.user = user;
     mockAuthValue.isAuthenticated = true;
@@ -94,7 +94,7 @@ describe('useTasks', () => {
     });
 
     await act(async () => {
-      await result.current.deleteTask('task-1');
+      await result.current.deleteTask("task-1");
     });
 
     await waitFor(() => {
@@ -102,10 +102,14 @@ describe('useTasks', () => {
     });
   });
 
-  it('should toggle task completion', async () => {
-    const user = createUser({ id: 'user-1' });
-    const task = createTask({ id: 'task-1', userId: 'user-1', completed: false });
-    await AsyncStorage.setItem('user_tasks', JSON.stringify([task]));
+  it("should toggle task completion", async () => {
+    const user = createUser({ id: "user-1" });
+    const task = createTask({
+      id: "task-1",
+      userId: "user-1",
+      completed: false,
+    });
+    await AsyncStorage.setItem("user_tasks", JSON.stringify([task]));
 
     mockAuthValue.user = user;
     mockAuthValue.isAuthenticated = true;
@@ -117,7 +121,7 @@ describe('useTasks', () => {
     });
 
     await act(async () => {
-      await result.current.toggleTaskCompletion('task-1');
+      await result.current.toggleTaskCompletion("task-1");
     });
 
     await waitFor(() => {
@@ -125,11 +129,19 @@ describe('useTasks', () => {
     });
   });
 
-  it('should filter tasks by search query', async () => {
-    const user = createUser({ id: 'user-1' });
-    const task1 = createTask({ id: 'task-1', userId: 'user-1', title: 'Task One' });
-    const task2 = createTask({ id: 'task-2', userId: 'user-1', title: 'Task Two' });
-    await AsyncStorage.setItem('user_tasks', JSON.stringify([task1, task2]));
+  it("should filter tasks by search query", async () => {
+    const user = createUser({ id: "user-1" });
+    const task1 = createTask({
+      id: "task-1",
+      userId: "user-1",
+      title: "Task One",
+    });
+    const task2 = createTask({
+      id: "task-2",
+      userId: "user-1",
+      title: "Task Two",
+    });
+    await AsyncStorage.setItem("user_tasks", JSON.stringify([task1, task2]));
 
     mockAuthValue.user = user;
     mockAuthValue.isAuthenticated = true;
@@ -141,12 +153,12 @@ describe('useTasks', () => {
     });
 
     act(() => {
-      result.current.setFilters({ search: 'One' });
+      result.current.setFilters({ search: "One" });
     });
 
     await waitFor(() => {
       expect(result.current.tasks.length).toBe(1);
-      expect(result.current.tasks[0].title).toBe('Task One');
+      expect(result.current.tasks[0].title).toBe("Task One");
     });
   });
 });

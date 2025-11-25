@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
 
 interface Props {
   children: React.ReactNode;
@@ -10,6 +10,13 @@ interface State {
   error?: Error;
 }
 
+/**
+ * ErrorBoundary
+ *
+ * React error boundary that captures render-time errors, logs them to the
+ * console and displays a fallback UI with a reset button. Wrap top-level
+ * parts of the app to avoid entire crashes.
+ */
 export class ErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -21,7 +28,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   handleReset = () => {
@@ -46,19 +53,19 @@ export class ErrorBoundary extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   message: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
-    color: '#666',
+    color: "#666",
   },
 });

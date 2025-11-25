@@ -1,48 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   StyleSheet,
-  Alert,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { useAuthContext as useAuth } from '../contexts/AuthContext';
-import { Button } from '../components/shared/Button';
-import { Card } from '../components/shared/Card';
-import { useTranslation } from '../hooks/useTranslation';
-import { useErrorHandler } from '../hooks/useErrorHandler';
-import { useTheme } from '../contexts/ThemeContext';
-import { ThemedText } from '../components/shared/ThemedText';
-import { ThemedCard } from '../components/shared/ThemedCard';
-import { ThemedView } from '../components/shared/ThemedView';
-import { showAlert } from '../utils/alertHelper';
+} from "react-native";
+import { useAuthContext as useAuth } from "../contexts/AuthContext";
+import { Button } from "../components/shared/Button";
+import { useTranslation } from "../hooks/useTranslation";
+import { useErrorHandler } from "../hooks/useErrorHandler";
+import { ThemedText } from "../components/shared/ThemedText";
+import { ThemedCard } from "../components/shared/ThemedCard";
+import { ThemedView } from "../components/shared/ThemedView";
+import { showAlert } from "../utils/alertHelper";
 
 export const SignInScreen: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const { t } = useTranslation();
   const { handleError } = useErrorHandler();
-  const { theme } = useTheme();
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      showAlert(t('common.error'), t('auth.fillAllFields'));
+      showAlert(t("common.error"), t("auth.fillAllFields"));
       return;
     }
 
     setLoading(true);
     try {
       await login(email, password);
-    } catch (error: any) {
-      handleError(error, 'SignInScreen');
+    } catch (error: unknown) {
+      handleError(error, "SignInScreen");
       showAlert(
-        t('auth.signIn'),
-        error.message || t('auth.invalidCredentials')
+        t("auth.signIn"),
+        error instanceof Error ? error.message : t("auth.invalidCredentials"),
       );
     } finally {
       setLoading(false);
@@ -50,11 +45,11 @@ export const SignInScreen: React.FC = () => {
   };
 
   const demoCredentials = {
-    admin: { email: 'admin@taskmanager.com', password: 'admin123' },
-    user: { email: 'user@taskmanager.com', password: 'user123' },
+    admin: { email: "admin@taskmanager.com", password: "admin123" },
+    user: { email: "user@taskmanager.com", password: "user123" },
   };
 
-  const fillDemoCredentials = (role: 'admin' | 'user') => {
+  const fillDemoCredentials = (role: "admin" | "user") => {
     setEmail(demoCredentials[role].email);
     setPassword(demoCredentials[role].password);
   };
@@ -63,22 +58,22 @@ export const SignInScreen: React.FC = () => {
     <ThemedView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
             <ThemedText size="xxxl" weight="bold" style={styles.title}>
-              {t('auth.appName')}
+              {t("auth.appName")}
             </ThemedText>
 
             <ThemedCard elevated style={styles.card}>
               <ThemedText size="xl" weight="semibold" style={styles.subtitle}>
-                {t('auth.signIn')}
+                {t("auth.signIn")}
               </ThemedText>
 
               <TextInput
                 style={styles.input}
-                placeholder={t('auth.email')}
+                placeholder={t("auth.email")}
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
@@ -88,7 +83,7 @@ export const SignInScreen: React.FC = () => {
 
               <TextInput
                 style={styles.input}
-                placeholder={t('auth.password')}
+                placeholder={t("auth.password")}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -96,7 +91,7 @@ export const SignInScreen: React.FC = () => {
               />
 
               <Button
-                title={loading ? t('common.loading') : t('auth.signIn')}
+                title={loading ? t("common.loading") : t("auth.signIn")}
                 onPress={handleSignIn}
                 disabled={loading}
                 style={styles.signInButton}
@@ -104,20 +99,20 @@ export const SignInScreen: React.FC = () => {
 
               <View style={styles.demoSection}>
                 <ThemedText variant="secondary" style={styles.demoTitle}>
-                  {t('auth.demoCredentials')}
+                  {t("auth.demoCredentials")}
                 </ThemedText>
 
                 <Button
-                  title={t('auth.useAdminAccount')}
-                  onPress={() => fillDemoCredentials('admin')}
+                  title={t("auth.useAdminAccount")}
+                  onPress={() => fillDemoCredentials("admin")}
                   variant="secondary"
                   style={styles.demoButton}
                   disabled={loading}
                 />
 
                 <Button
-                  title={t('auth.useMemberAccount')}
-                  onPress={() => fillDemoCredentials('user')}
+                  title={t("auth.useMemberAccount")}
+                  onPress={() => fillDemoCredentials("user")}
                   variant="secondary"
                   style={styles.demoButton}
                   disabled={loading}
@@ -137,17 +132,17 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   content: {
     padding: 20,
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 30,
   },
   subtitle: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
   card: {
@@ -156,7 +151,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderRadius: 8,
-    padding: Platform.OS === 'ios' ? 16 : 12,
+    padding: Platform.OS === "ios" ? 16 : 12,
     fontSize: 16,
     marginBottom: 16,
   },
@@ -170,9 +165,9 @@ const styles = StyleSheet.create({
   },
   demoTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   demoButton: {
     marginBottom: 8,

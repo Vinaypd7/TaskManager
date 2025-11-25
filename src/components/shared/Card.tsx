@@ -1,29 +1,31 @@
-import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import React from "react";
+import { View, StyleSheet, Platform, StyleProp, ViewStyle } from "react-native";
 
 interface CardProps {
   children: React.ReactNode;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * Card
+ *
+ * A simple presentational container with platform-specific elevation/shadow
+ * and padding. Use to wrap content sections consistently across the app.
+ */
 export const Card: React.FC<CardProps> = ({ children, style }) => {
-  return (
-    <View style={[styles.card, style]}>
-      {children}
-    </View>
-  );
+  return <View style={[styles.card, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: Platform.OS === 'ios' ? 12 : 8,
+    backgroundColor: "#FFFFFF",
+    borderRadius: Platform.OS === "ios" ? 12 : 8,
     padding: 16,
     marginVertical: 8,
     marginHorizontal: 16,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
         elevation: 3,
       },
       web: {
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,

@@ -3,6 +3,6 @@ export const PAGINATION_CONFIG = {
 } as const;
 
 export const ROLES = {
-  MEMBER: 'ROLE_MEMBER',
-  ADMIN: 'ROLE_ADMIN',
+  MEMBER: "ROLE_MEMBER",
+  ADMIN: "ROLE_ADMIN",
 } as const;

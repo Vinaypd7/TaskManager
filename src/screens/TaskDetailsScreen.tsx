@@ -1,37 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/types';
-import { useTasks } from '../hooks/useTasks';
-import { Button } from '../components/shared/Button';
-import { ThemedCard } from '../components/shared/ThemedCard';
-import { ThemedText } from '../components/shared/ThemedText';
-import { ThemedView } from '../components/shared/ThemedView';
-import { TaskForm } from '../components/TaskForm';
-import { useTranslation } from '../hooks/useTranslation';
-import { useTheme } from '../contexts/ThemeContext';
-import { Task } from '../types';
-import { showAlert } from '../utils/alertHelper';
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigation/types";
+import { useTasks } from "../hooks/useTasks";
+import { Button } from "../components/shared/Button";
+import { ThemedCard } from "../components/shared/ThemedCard";
+import { ThemedText } from "../components/shared/ThemedText";
+import { ThemedView } from "../components/shared/ThemedView";
+import { TaskForm } from "../components/TaskForm";
+import { useTranslation } from "../hooks/useTranslation";
+import { useTheme } from "../contexts/ThemeContext";
+import { Task } from "../types";
+import { showAlert } from "../utils/alertHelper";
 
-type TaskDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'TaskDetails'>;
-type TaskDetailsScreenRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
+type TaskDetailsScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "TaskDetails"
+>;
+type TaskDetailsScreenRouteProp = RouteProp<RootStackParamList, "TaskDetails">;
 
 export const TaskDetailsScreen: React.FC = () => {
   const [editing, setEditing] = useState(false);
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   const navigation = useNavigation<TaskDetailsScreenNavigationProp>();
   const route = useRoute<TaskDetailsScreenRouteProp>();
   const { taskId } = route.params;
-  
+
   const { allTasks, updateTask, deleteTask, toggleTaskCompletion } = useTasks();
   const { t } = useTranslation();
   const { theme } = useTheme();
@@ -41,48 +38,47 @@ export const TaskDetailsScreen: React.FC = () => {
   }, [taskId, allTasks]);
 
   const loadTask = () => {
-    const foundTask = allTasks.find(t => t.id === taskId);
+    const foundTask = allTasks.find((t) => t.id === taskId);
     setTask(foundTask || null);
     setLoading(false);
   };
 
-  const handleUpdateTask = async (data: { title: string; description: string }) => {
+  const handleUpdateTask = async (data: {
+    title: string;
+    description: string;
+  }) => {
     try {
       await updateTask(taskId, data);
       setEditing(false);
-      showAlert(t('common.success'), t('tasks.updateSuccess'));
+      showAlert(t("common.success"), t("tasks.updateSuccess"));
     } catch (error) {
-      showAlert(t('common.error'), t('tasks.updateError'));
+      showAlert(t("common.error"), t("tasks.updateError"));
     }
   };
 
   const handleDeleteTask = () => {
-    showAlert(
-      t('tasks.deleteTask'),
-      t('tasks.deleteConfirm'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('common.delete'),
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await deleteTask(taskId);
-              navigation.goBack();
-            } catch (error) {
-              showAlert(t('common.error'), t('tasks.deleteError'));
-            }
-          },
+    showAlert(t("tasks.deleteTask"), t("tasks.deleteConfirm"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("common.delete"),
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteTask(taskId);
+            navigation.goBack();
+          } catch (error) {
+            showAlert(t("common.error"), t("tasks.deleteError"));
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleToggleCompletion = async () => {
     try {
       await toggleTaskCompletion(taskId);
     } catch (error) {
-      showAlert(t('common.error'), t('tasks.statusUpdateError'));
+      showAlert(t("common.error"), t("tasks.statusUpdateError"));
     }
   };
 
@@ -90,7 +86,7 @@ export const TaskDetailsScreen: React.FC = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
-      navigation.navigate('Main', { screen: 'Tasks' });
+      navigation.navigate("Main", { screen: "Tasks" });
     }
   };
 
@@ -99,7 +95,7 @@ export const TaskDetailsScreen: React.FC = () => {
       <ThemedView style={styles.centered}>
         <ActivityIndicator size="large" color={theme.colors.primary[500]} />
         <ThemedText variant="secondary" style={styles.loadingText}>
-          {t('common.loading')}
+          {t("common.loading")}
         </ThemedText>
       </ThemedView>
     );
@@ -109,12 +105,12 @@ export const TaskDetailsScreen: React.FC = () => {
     return (
       <ThemedView style={styles.centered}>
         <ThemedText variant="secondary" size="lg" style={styles.errorText}>
-          {t('tasks.taskNotFound')}
+          {t("tasks.taskNotFound")}
         </ThemedText>
-        <Button 
-          title={t('common.goBack')} 
-          onPress={handleGoBack} 
-          style={styles.backButton} 
+        <Button
+          title={t("common.goBack")}
+          onPress={handleGoBack}
+          style={styles.backButton}
         />
       </ThemedView>
     );
@@ -123,9 +119,14 @@ export const TaskDetailsScreen: React.FC = () => {
   return (
     <ThemedView style={styles.container}>
       <ScrollView>
-        <View style={[styles.header, { backgroundColor: theme.colors.background.primary }]}>
+        <View
+          style={[
+            styles.header,
+            { backgroundColor: theme.colors.background.primary },
+          ]}
+        >
           <Button
-            title={t('common.back')}
+            title={t("common.back")}
             onPress={handleGoBack}
             variant="secondary"
             style={styles.backButton}
@@ -135,7 +136,7 @@ export const TaskDetailsScreen: React.FC = () => {
         {editing ? (
           <ThemedCard style={styles.card}>
             <ThemedText size="xl" weight="semibold" style={styles.editTitle}>
-              {t('tasks.editTask')}
+              {t("tasks.editTask")}
             </ThemedText>
             <TaskForm
               onSubmit={handleUpdateTask}
@@ -153,67 +154,99 @@ export const TaskDetailsScreen: React.FC = () => {
                 <ThemedText size="xl" weight="bold" style={styles.title}>
                   {task.title}
                 </ThemedText>
-                <View style={[
-                  styles.statusBadge,
-                  { 
-                    backgroundColor: task.completed 
-                      ? theme.colors.success[50] 
-                      : theme.colors.warning[50] 
-                  }
-                ]}>
-                  <ThemedText 
-                    size="xs" 
+                <View
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor: task.completed
+                        ? theme.colors.success[50]
+                        : theme.colors.warning[50],
+                    },
+                  ]}
+                >
+                  <ThemedText
+                    size="xs"
                     weight="semibold"
-                    variant={task.completed ? 'success' : 'warning'}
+                    variant={task.completed ? "success" : "warning"}
                   >
-                    {task.completed ? t('tasks.completed') : t('tasks.pending')}
+                    {task.completed ? t("tasks.completed") : t("tasks.pending")}
                   </ThemedText>
                 </View>
               </View>
-              
+
               <View style={styles.actionButtons}>
                 <Button
-                  title={task.completed ? t('tasks.markIncomplete') : t('tasks.markComplete')}
+                  title={
+                    task.completed
+                      ? t("tasks.markIncomplete")
+                      : t("tasks.markComplete")
+                  }
                   onPress={handleToggleCompletion}
-                  variant={task.completed ? 'secondary' : 'primary'}
+                  variant={task.completed ? "secondary" : "primary"}
                   style={styles.statusButton}
                 />
               </View>
             </View>
 
             <View style={styles.section}>
-              <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
-                {t('tasks.description')}
+              <ThemedText
+                size="lg"
+                weight="semibold"
+                style={styles.sectionTitle}
+              >
+                {t("tasks.description")}
               </ThemedText>
               <ThemedText variant="secondary" style={styles.description}>
                 {task.description}
               </ThemedText>
             </View>
 
-            <View style={[styles.metaSection, { backgroundColor: theme.colors.background.secondary }]}>
+            <View
+              style={[
+                styles.metaSection,
+                { backgroundColor: theme.colors.background.secondary },
+              ]}
+            >
               <View style={styles.metaItem}>
-                <ThemedText variant="secondary" size="sm" style={styles.metaLabel}>
-                  {t('tasks.created')}
+                <ThemedText
+                  variant="secondary"
+                  size="sm"
+                  style={styles.metaLabel}
+                >
+                  {t("tasks.created")}
                 </ThemedText>
                 <ThemedText size="sm" style={styles.metaValue}>
                   {new Date(task.createdAt).toLocaleString()}
                 </ThemedText>
               </View>
-              
+
               <View style={styles.metaItem}>
-                <ThemedText variant="secondary" size="sm" style={styles.metaLabel}>
-                  {t('tasks.lastUpdated')}
+                <ThemedText
+                  variant="secondary"
+                  size="sm"
+                  style={styles.metaLabel}
+                >
+                  {t("tasks.lastUpdated")}
                 </ThemedText>
                 <ThemedText size="sm" style={styles.metaValue}>
                   {new Date(task.updatedAt).toLocaleString()}
                 </ThemedText>
               </View>
-              
+
               <View style={styles.metaItem}>
-                <ThemedText variant="secondary" size="sm" style={styles.metaLabel}>
-                  {t('tasks.taskId')}
+                <ThemedText
+                  variant="secondary"
+                  size="sm"
+                  style={styles.metaLabel}
+                >
+                  {t("tasks.taskId")}
                 </ThemedText>
-                <ThemedText size="sm" style={styles.metaValue} numberOfLines={1} ellipsizeMode="middle">
+                <ThemedText
+                  size="sm"
+                  style={styles.metaValue}
+                  numberOfLines={1}
+                  ellipsizeMode="middle"
+                >
                   {task.id}
                 </ThemedText>
               </View>
@@ -221,14 +254,14 @@ export const TaskDetailsScreen: React.FC = () => {
 
             <View style={styles.footerActions}>
               <Button
-                title={t('tasks.editTask')}
+                title={t("tasks.editTask")}
                 onPress={() => setEditing(true)}
                 variant="secondary"
                 style={styles.editButton}
               />
-              
+
               <Button
-                title={t('tasks.deleteTask')}
+                title={t("tasks.deleteTask")}
                 onPress={handleDeleteTask}
                 variant="secondary"
                 style={styles.deleteButton}
@@ -247,8 +280,8 @@ const styles = StyleSheet.create({
   },
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   loadingText: {
@@ -256,31 +289,31 @@ const styles = StyleSheet.create({
   },
   errorText: {
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   header: {
     padding: 16,
     borderBottomWidth: 1,
   },
   backButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   card: {
     margin: 16,
   },
   editTitle: {
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   taskHeader: {
     marginBottom: 24,
   },
   titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 12,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   title: {
     flex: 1,
@@ -290,11 +323,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   actionButtons: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   statusButton: {
     minWidth: 160,
@@ -315,9 +348,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   metaItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   metaLabel: {
@@ -325,12 +358,12 @@ const styles = StyleSheet.create({
   },
   metaValue: {
     flex: 1,
-    textAlign: 'right',
+    textAlign: "right",
     marginLeft: 12,
   },
   footerActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 12,
   },
   editButton: {
