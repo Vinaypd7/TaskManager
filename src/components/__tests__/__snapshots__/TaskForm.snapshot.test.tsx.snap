@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskForm Snapshot Tests should match snapshot for empty form 1`] = `null`;
+
+exports[`TaskForm Snapshot Tests should match snapshot for form with cancel button 1`] = `null`;
+
+exports[`TaskForm Snapshot Tests should match snapshot for form with initial data 1`] = `null`;
+
+exports[`TaskForm Snapshot Tests should match snapshot for loading form 1`] = `null`;

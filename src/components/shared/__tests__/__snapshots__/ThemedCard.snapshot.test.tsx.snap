@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThemedCard Snapshot Tests should match snapshot for basic themed card 1`] = `null`;
+
+exports[`ThemedCard Snapshot Tests should match snapshot for elevated themed card 1`] = `null`;
+
+exports[`ThemedCard Snapshot Tests should match snapshot for themed card with custom style 1`] = `null`;

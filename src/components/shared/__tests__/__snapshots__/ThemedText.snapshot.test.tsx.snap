@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThemedText Snapshot Tests should match snapshot for error text 1`] = `null`;
+
+exports[`ThemedText Snapshot Tests should match snapshot for large text 1`] = `null`;
+
+exports[`ThemedText Snapshot Tests should match snapshot for primary text 1`] = `null`;
+
+exports[`ThemedText Snapshot Tests should match snapshot for secondary text 1`] = `null`;
