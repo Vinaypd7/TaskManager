@@ -11,7 +11,7 @@ export interface Task {
 export interface User {
   id: string;
   email: string;
-  role: 'ROLE_MEMBER' | 'ROLE_ADMIN';
+  role: "ROLE_MEMBER" | "ROLE_ADMIN";
   name: string;
 }
 
@@ -31,7 +31,7 @@ export type PaginationParams = {
 
 export type SortParams = {
   field: keyof Task;
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 };
 
 export type FilterParams = {
@@ -42,10 +42,18 @@ export type FilterParams = {
 export interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
   disabled?: boolean;
-  style?: any;
+  style?: Record<string, unknown>;
   testID?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityRole?: "button" | "link" | "togglebutton";
+  accessibilityState?: {
+    disabled?: boolean;
+    selected?: boolean;
+    checked?: boolean;
+  };
 }
 
 // Add form data types

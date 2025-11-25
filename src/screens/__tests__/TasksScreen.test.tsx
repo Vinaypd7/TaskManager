@@ -202,13 +202,14 @@ describe("TasksScreen", () => {
       refreshTasks: mockRefreshTasks,
     });
 
-    const { getByText } = render(
+    const { getByLabelText } = render(
       <TestWrapper>
         <TasksScreen />
       </TestWrapper>,
     );
 
-    expect(getByText("Task 1")).toBeTruthy();
+    // Task text is hidden from accessibility tree by parent, so we check the accessibility label instead
+    expect(getByLabelText("Task 1, pending")).toBeTruthy();
   });
 
   it("should filter tasks by search query", () => {

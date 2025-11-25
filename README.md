@@ -447,6 +447,55 @@ Your app will be live in minutes! 🚀
 - **Environment Variables**: If your app uses environment variables, configure them in your hosting platform's dashboard
 - **Free Tier Limits**: Most free tiers are sufficient for demos and small projects
 
+## ♿ Accessibility
+
+TaskManager is built with accessibility as a core principle. All components are tested with screen readers and follow WCAG 2.1 Level AA guidelines.
+
+### Key Features
+- ✅ Full VoiceOver (iOS) support
+- ✅ Full TalkBack (Android) support  
+- ✅ Keyboard navigation support
+- ✅ High contrast color schemes
+- ✅ Descriptive accessibility labels and hints
+- ✅ Screen reader announcements for status changes
+- ✅ Accessible form validation
+- ✅ Proper heading hierarchy
+- ✅ Minimum 44x44px touch targets
+
+### Testing Accessibility
+
+The app includes comprehensive accessibility testing utilities and documentation:
+
+**Testing with Screen Readers:**
+- iOS: Use **VoiceOver** (Settings → Accessibility → VoiceOver)
+- Android: Use **TalkBack** (Settings → Accessibility → TalkBack)
+- Web: Use **NVDA** (Windows) or **JAWS** (commercial)
+
+**Test Scenarios Included:**
+- Task list navigation
+- Form submission and validation
+- Error message announcements
+- Pagination controls
+- Settings and preferences
+
+**For Detailed Testing Guide:**
+See [ACCESSIBILITY.md](./ACCESSIBILITY.md) for comprehensive testing instructions and best practices.
+
+### Accessibility Implementation Files
+
+- `src/utils/accessibilityHelpers.ts` - Utility functions for accessibility
+- `src/utils/accessibilityTesting.ts` - Testing guide and checklist
+- `src/utils/__tests__/accessibilityHelpers.test.ts` - Accessibility tests
+- `ACCESSIBILITY.md` - Full accessibility documentation
+
+### Resources
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [React Native Accessibility](https://reactnative.dev/docs/accessibility)
+- [Apple VoiceOver](https://www.apple.com/accessibility/voiceover/)
+- [Google TalkBack](https://support.google.com/accessibility/android/answer/6283677)
+
+---
+
 **Contributing**
 - Open an issue or PR. Keep changes focused and add tests for new behaviors.
 
