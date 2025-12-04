@@ -23,7 +23,8 @@ export const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { t, locale, changeLanguage } = useTranslation();
   const { theme, isDark, toggleTheme } = useTheme();
-  const { flags, isFeatureEnabled } = useFeatureFlags();
+  const isPreferenceEnabled = useFeatureFlags("enablePreferences");
+  const isAppearanceEnabled = useFeatureFlags("enableAppearance");
 
   const handleLogout = () => {
     showAlert(t("auth.signOut"), "Are you sure you want to sign out?", [
@@ -117,7 +118,7 @@ export const ProfileScreen: React.FC = () => {
           </View>
         </ThemedCard>
 
-        {isFeatureEnabled("enablePreferences") && (
+        {isPreferenceEnabled && (
           <ThemedCard style={styles.sectionCard}>
             <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
               {t("profile.preferences")}
@@ -149,7 +150,7 @@ export const ProfileScreen: React.FC = () => {
           </ThemedCard>
         )}
 
-        {isFeatureEnabled("enableAppearance") && (
+        {isAppearanceEnabled && (
           <ThemedCard style={styles.sectionCard}>
             <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
               {t("profile.appearance")}
@@ -245,37 +246,6 @@ export const ProfileScreen: React.FC = () => {
             />
           </ThemedCard>
         )}
-
-        {/* Feature Flags Section - Commented out for now */}
-        <ThemedCard style={styles.sectionCard}>
-          <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>
-            {t("profile.featureFlags")}
-          </ThemedText>
-
-          <View style={styles.featureFlags}>
-            {Object.entries(flags).map(([feature, enabled]) => (
-              <View key={feature} style={styles.featureFlagItem}>
-                <ThemedText style={styles.featureFlagName}>
-                  {feature.replace(/([A-Z])/g, " $1").trim()}
-                </ThemedText>
-                <View
-                  style={[
-                    styles.featureFlagStatus,
-                    enabled ? styles.featureEnabled : styles.featureDisabled,
-                  ]}
-                >
-                  <ThemedText
-                    size="sm"
-                    weight="semibold"
-                    variant={enabled ? "success" : "error"}
-                  >
-                    {enabled ? t("common.enabled") : t("common.disabled")}
-                  </ThemedText>
-                </View>
-              </View>
-            ))}
-          </View>
-        </ThemedCard>
 
         <ThemedCard style={styles.sectionCard}>
           <ThemedText size="lg" weight="semibold" style={styles.sectionTitle}>

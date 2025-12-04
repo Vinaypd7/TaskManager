@@ -53,7 +53,7 @@ export const TasksScreen: React.FC = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { handleError } = useErrorHandler(); // Add this
-  const { isFeatureEnabled } = useFeatureFlags();
+  const isTaskSearchEnabled = useFeatureFlags("enableTaskSearch");
   const { width, height } = useWindowDimensions();
   // Check if screen is wide enough for side-by-side layout
   const isWideScreen = width > height && width > 768; // Landscape or wide screen
@@ -272,7 +272,7 @@ export const TasksScreen: React.FC = () => {
       </View>
       <View style={{ flex: 1, flexDirection: isWideScreen ? "row" : "column" }}>
         <View style={isWideScreen ? { flex: 0.5 } : {}}>
-          {isFeatureEnabled("enableTaskSearch") && (
+          {isTaskSearchEnabled && (
             <ThemedCard style={styles.searchCard}>
               <TextInput
                 style={[

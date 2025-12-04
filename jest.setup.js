@@ -36,3 +36,32 @@ beforeEach(() => {
   AsyncStorage.clear();
 });
 
+// Provide a global mock for feature flags so tests render flag-gated UI
+try {
+  const featureFlagsPath = require.resolve('./src/hooks/useFeatureFlags');
+  jest.mock(featureFlagsPath, () => ({
+    useFeatureFlags: (flagName) => {
+      // Enable preferences, appearance and task search in tests by default
+      if (
+        flagName === 'enablePreferences' ||
+        flagName === 'enableAppearance' ||
+        flagName === 'enableTaskSearch'
+      ) {
+        return true;
+      }
+      return false;
+    },
+  }));
+} catch (e) {
+  // ignore if resolution fails in non-test environments
+}
+
+// Provide a lightweight mock for feature flag hook so tests can enable certain UI
+jest.mock('./src/hooks/useFeatureFlags', () => ({
+  useFeatureFlags: (flagName) => {
+    if (flagName === 'enablePreferences') return true;
+    if (flagName === 'enableTaskSearch') return true;
+    return false;
+  },
+}));
+

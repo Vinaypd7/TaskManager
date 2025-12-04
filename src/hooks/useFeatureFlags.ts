@@ -1,33 +1,24 @@
-import { useState, useEffect } from "react";
-import { featureFlagService } from "../services/featureFlagService";
+import { useEffect, useState } from "react";
+import { fetchAndActivate, getValue } from "firebase/remote-config";
+import { remoteConfig } from "../config/firebase";
 
-export const useFeatureFlags = () => {
-  const [flags, setFlags] = useState<Record<string, boolean>>({});
-  const [loading, setLoading] = useState(true);
+export const useFeatureFlags = (flagName: string) => {
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    loadFeatureFlags();
-  }, []);
+    const loadFlag = async () => {
+      try {
+        await fetchAndActivate(remoteConfig);
+        const flag = getValue(remoteConfig, flagName).asBoolean();
+        setEnabled(flag);
+      } catch (e) {
+        console.log("Remote config error:", e);
+        setEnabled(false);
+      }
+    };
 
-  const loadFeatureFlags = async () => {
-    try {
-      const featureFlags = await featureFlagService.getFeatureFlags();
-      setFlags(featureFlags);
-    } catch (error) {
-      console.error("Failed to load feature flags:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    loadFlag();
+  }, [flagName]);
 
-  const isFeatureEnabled = (feature: string): boolean => {
-    return flags[feature] || false;
-  };
-
-  return {
-    flags,
-    loading,
-    isFeatureEnabled,
-    refreshFlags: loadFeatureFlags,
-  };
+  return enabled;
 };

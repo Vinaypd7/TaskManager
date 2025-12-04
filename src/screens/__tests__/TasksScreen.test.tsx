@@ -116,15 +116,6 @@ describe("TasksScreen", () => {
       .spyOn(require("@react-navigation/native"), "useNavigation")
       .mockReturnValue(mockNavigation);
 
-    jest
-      .spyOn(require("../../hooks/useFeatureFlags"), "useFeatureFlags")
-      .mockReturnValue({
-        flags: { enableTaskSearch: true },
-        loading: false,
-        isFeatureEnabled: (feature: string) => feature === "enableTaskSearch",
-        refreshFlags: jest.fn(),
-      });
-
     jest.spyOn(require("../../hooks/useTasks"), "useTasks").mockReturnValue({
       tasks: [],
       allTasks: [],

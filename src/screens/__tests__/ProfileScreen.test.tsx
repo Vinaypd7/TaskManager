@@ -114,15 +114,6 @@ describe("ProfileScreen", () => {
         setThemeMode: jest.fn(),
         loading: false,
       });
-    jest
-      .spyOn(require("../../hooks/useFeatureFlags"), "useFeatureFlags")
-      .mockReturnValue({
-        flags: { enablePreferences: true, enableAppearance: true },
-        loading: false,
-        isFeatureEnabled: (feature: string) =>
-          feature === "enablePreferences" || feature === "enableAppearance",
-        refreshFlags: jest.fn(),
-      });
   });
 
   const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
