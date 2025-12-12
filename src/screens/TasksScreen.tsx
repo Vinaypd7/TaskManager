@@ -1,37 +1,39 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
   FlatList,
-  Alert,
   RefreshControl,
   TextInput,
   TouchableOpacity,
   useWindowDimensions,
-} from 'react-native';
-import { useTasks } from '../hooks/useTasks';
-import { useAuthContext as useAuth } from '../contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/types';
-import { Button } from '../components/shared/Button';
-import { ThemedCard } from '../components/shared/ThemedCard';
-import { ThemedText } from '../components/shared/ThemedText';
-import { ThemedView } from '../components/shared/ThemedView';
-import { TaskForm } from '../components/TaskForm';
-import { useTranslation } from '../hooks/useTranslation';
-import { useTheme } from '../contexts/ThemeContext';
-import { Task } from '../types';
-import { showAlert } from '../utils/alertHelper';
-import { useErrorHandler } from '../hooks/useErrorHandler';
-import { useFeatureFlags } from '../hooks/useFeatureFlags';
+} from "react-native";
+import { useTasks } from "../hooks/useTasks";
+import { useAuthContext as useAuth } from "../contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigation/types";
+import { Button } from "../components/shared/Button";
+import { ThemedCard } from "../components/shared/ThemedCard";
+import { ThemedText } from "../components/shared/ThemedText";
+import { ThemedView } from "../components/shared/ThemedView";
+import { TaskForm } from "../components/TaskForm";
+import { useTranslation } from "../hooks/useTranslation";
+import { useTheme } from "../contexts/ThemeContext";
+import { Task } from "../types";
+import { showAlert } from "../utils/alertHelper";
+import { useErrorHandler } from "../hooks/useErrorHandler";
+import { useFeatureFlags } from "../hooks/useFeatureFlags";
 
-type TasksScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
+type TasksScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Main"
+>;
 
 export const TasksScreen: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     tasks,
@@ -56,36 +58,35 @@ export const TasksScreen: React.FC = () => {
   // Check if screen is wide enough for side-by-side layout
   const isWideScreen = width > height && width > 768; // Landscape or wide screen
 
-  const handleAddTask = async (data: { title: string; description: string }) => {
+  const handleAddTask = async (data: {
+    title: string;
+    description: string;
+  }) => {
     try {
       await addTask(data.title, data.description);
       setShowAddForm(false);
     } catch (error) {
-      await handleError(error, 'TasksScreen-addTask');
-      showAlert(t('common.error'), t('tasks.addError'));
+      await handleError(error, "TasksScreen-addTask");
+      showAlert(t("common.error"), t("tasks.addError"));
     }
   };
 
   const handleDeleteTask = (taskId: string) => {
-    showAlert(
-      t('tasks.deleteTask'),
-      t('tasks.deleteConfirm'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('common.delete'),
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await deleteTask(taskId);
-            } catch (error) {
-              await handleError(error, 'TasksScreen-deleteTask'); // Add this
-              showAlert(t('common.error'), t('tasks.deleteError'));
-            }
-          },
+    showAlert(t("tasks.deleteTask"), t("tasks.deleteConfirm"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("common.delete"),
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteTask(taskId);
+          } catch (error) {
+            await handleError(error, "TasksScreen-deleteTask"); // Add this
+            showAlert(t("common.error"), t("tasks.deleteError"));
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleRefresh = async () => {
@@ -95,7 +96,7 @@ export const TasksScreen: React.FC = () => {
   };
 
   const handleTaskPress = (task: Task) => {
-    navigation.push('TaskDetails', { taskId: task.id });
+    navigation.push("TaskDetails", { taskId: task.id });
   };
 
   const handleSearch = (query: string) => {
@@ -108,46 +109,89 @@ export const TasksScreen: React.FC = () => {
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setPagination(prev => ({ ...prev, page }));
+      setPagination((prev) => ({ ...prev, page }));
     }
   };
 
   const renderTaskItem = ({ item }: { item: Task }) => (
-    <ThemedCard style={styles.taskCard}>
-      <TouchableOpacity onPress={() => handleTaskPress(item)}>
-        <View style={styles.taskHeader}>
+    <ThemedCard
+      style={styles.taskCard}
+      accessible={true}
+      accessibilityRole="list"
+      accessibilityLabel={`Task: ${item.title}`}
+    >
+      <TouchableOpacity
+        onPress={() => handleTaskPress(item)}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`${item.title}, ${item.completed ? "completed" : "pending"}`}
+        accessibilityHint="Double tap to view task details"
+      >
+        <View
+          style={styles.taskHeader}
+          accessible={false}
+          accessibilityElementsHidden={true}
+        >
           <ThemedText size="lg" weight="semibold" style={styles.taskTitle}>
             {item.title}
           </ThemedText>
-          <View style={styles.taskActions}>
+          <View
+            style={styles.taskActions}
+            accessible={true}
+            accessibilityRole="group"
+            accessibilityLabel="Task actions"
+          >
             <Button
-              title={item.completed ? '✓' : '○'}
+              title={item.completed ? "✓" : "○"}
               onPress={() => toggleTaskCompletion(item.id)}
-              variant={item.completed ? 'primary' : 'secondary'}
+              variant={item.completed ? "primary" : "secondary"}
               style={styles.completionButton}
+              accessibilityLabel={
+                item.completed ? "Mark as incomplete" : "Mark as complete"
+              }
+              accessibilityHint={`Toggle task completion status for ${item.title}`}
             />
             <Button
-              title={t('common.delete')}
+              title={t("common.delete")}
               onPress={() => handleDeleteTask(item.id)}
               variant="secondary"
               style={styles.deleteButton}
+              accessibilityLabel={`Delete ${item.title}`}
+              accessibilityHint="Delete this task permanently"
             />
           </View>
         </View>
 
-        <ThemedText variant="secondary" style={styles.taskDescription} numberOfLines={2}>
+        <ThemedText
+          variant="secondary"
+          style={styles.taskDescription}
+          numberOfLines={2}
+        >
           {item.description}
         </ThemedText>
 
-        <View style={styles.taskFooter}>
+        <View
+          style={styles.taskFooter}
+          accessible={true}
+          accessibilityRole="group"
+        >
           <ThemedText
             size="sm"
             weight="medium"
-            variant={item.completed ? 'success' : 'warning'}
+            variant={item.completed ? "success" : "warning"}
+            accessible={true}
+            accessibilityLabel={
+              item.completed ? "Status: completed" : "Status: pending"
+            }
           >
-            {item.completed ? t('tasks.completed') : t('tasks.pending')}
+            {item.completed ? t("tasks.completed") : t("tasks.pending")}
           </ThemedText>
-          <ThemedText variant="tertiary" size="xs">
+          <ThemedText
+            variant="tertiary"
+            size="xs"
+            accessible={true}
+            accessibilityLabel={`Created on ${new Date(item.createdAt).toLocaleDateString()}`}
+          >
             {new Date(item.createdAt).toLocaleDateString()}
           </ThemedText>
         </View>
@@ -159,16 +203,31 @@ export const TasksScreen: React.FC = () => {
     if (totalPages <= 1) return null;
 
     return (
-      <View style={[styles.pagination, { backgroundColor: theme.colors.background.primary }]}>
+      <View
+        style={[
+          styles.pagination,
+          { backgroundColor: theme.colors.background.primary },
+        ]}
+        accessible={true}
+        accessibilityRole="group"
+        accessibilityLabel="Pagination controls"
+      >
         <Button
           title="‹"
           onPress={() => goToPage(currentPage - 1)}
           disabled={currentPage === 1}
           style={styles.paginationButton}
+          accessibilityLabel="Previous page"
+          accessibilityHint={`Go to page ${currentPage - 1}`}
         />
 
-        <ThemedText variant="secondary" style={styles.paginationText}>
-          {t('common.page')} {currentPage} {t('common.of')} {totalPages}
+        <ThemedText
+          variant="secondary"
+          style={styles.paginationText}
+          accessible={true}
+          accessibilityLabel={`Page ${currentPage} of ${totalPages}`}
+        >
+          {t("common.page")} {currentPage} {t("common.of")} {totalPages}
         </ThemedText>
 
         <Button
@@ -176,6 +235,8 @@ export const TasksScreen: React.FC = () => {
           onPress={() => goToPage(currentPage + 1)}
           disabled={currentPage === totalPages}
           style={styles.paginationButton}
+          accessibilityLabel="Next page"
+          accessibilityHint={`Go to page ${currentPage + 1}`}
         />
       </View>
     );
@@ -183,33 +244,54 @@ export const TasksScreen: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-
-      <View style={[styles.header, { backgroundColor: theme.colors.background.primary }]}>
-        <ThemedText size="xxxl" weight="bold">
-          {t('tasks.title')}
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: theme.colors.background.primary },
+        ]}
+      >
+        <ThemedText
+          size="xxxl"
+          weight="bold"
+          accessible={true}
+          accessibilityRole="header"
+        >
+          {t("tasks.title")}
         </ThemedText>
-        <ThemedText variant="secondary">
-          {user?.name} ({user?.role === 'ROLE_ADMIN' ? t('profile.roleAdmin') : t('profile.roleMember')})
+        <ThemedText
+          variant="secondary"
+          accessible={true}
+          accessibilityLabel={`Logged in as ${user?.name}, role: ${user?.role === "ROLE_ADMIN" ? t("profile.roleAdmin") : t("profile.roleMember")}`}
+        >
+          {user?.name} (
+          {user?.role === "ROLE_ADMIN"
+            ? t("profile.roleAdmin")
+            : t("profile.roleMember")}
+          )
         </ThemedText>
       </View>
-      <View style={{ flex: 1, flexDirection: isWideScreen ? 'row' : 'column' }}>
-
+      <View style={{ flex: 1, flexDirection: isWideScreen ? "row" : "column" }}>
         <View style={isWideScreen ? { flex: 0.5 } : {}}>
-          {isFeatureEnabled('enableTaskSearch') && 
-          <ThemedCard style={styles.searchCard}>
-            <TextInput
-              style={[
-                styles.searchInput,
-                {
-                  color: theme.colors.text.primary,
-                }
-              ]}
-              placeholder={t('tasks.searchPlaceholder')}
-              placeholderTextColor={theme.colors.text.tertiary}
-              value={searchQuery}
-              onChangeText={handleSearch}
-            />
-          </ThemedCard>}
+          {isFeatureEnabled("enableTaskSearch") && (
+            <ThemedCard style={styles.searchCard}>
+              <TextInput
+                style={[
+                  styles.searchInput,
+                  {
+                    color: theme.colors.text.primary,
+                  },
+                ]}
+                placeholder={t("tasks.searchPlaceholder")}
+                placeholderTextColor={theme.colors.text.tertiary}
+                value={searchQuery}
+                onChangeText={handleSearch}
+                accessible={true}
+                accessibilityLabel={t("tasks.searchPlaceholder")}
+                accessibilityHint="Search tasks by title or description"
+                accessibilityRole="search"
+              />
+            </ThemedCard>
+          )}
 
           {showAddForm ? (
             <TaskForm
@@ -219,9 +301,11 @@ export const TasksScreen: React.FC = () => {
             />
           ) : (
             <Button
-              title={t('tasks.addTask')}
+              title={t("tasks.addTask")}
               onPress={() => setShowAddForm(true)}
               style={styles.addButton}
+              accessibilityLabel={t("tasks.addTask")}
+              accessibilityHint="Add a new task to your list"
             />
           )}
         </View>
@@ -229,7 +313,7 @@ export const TasksScreen: React.FC = () => {
           <FlatList
             data={tasks}
             renderItem={renderTaskItem}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -241,7 +325,7 @@ export const TasksScreen: React.FC = () => {
             ListEmptyComponent={
               <ThemedCard style={styles.emptyCard}>
                 <ThemedText variant="secondary" style={styles.emptyText}>
-                  {t('tasks.noTasks')}
+                  {t("tasks.noTasks")}
                 </ThemedText>
               </ThemedCard>
             }
@@ -284,9 +368,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   taskHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 8,
   },
   taskTitle: {
@@ -294,8 +378,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   taskActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   completionButton: {
     minWidth: 44,
@@ -311,22 +395,22 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   taskFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   emptyCard: {
     margin: 16,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 40,
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
     borderTopWidth: 1,
   },

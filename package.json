@@ -19,7 +19,14 @@
     "test:update-snapshots": "jest --updateSnapshot",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
     "lint": "eslint src/**/*.tsx src/**/*.ts",
-    "build": "expo build"
+    "build": "npm run build:web",
+    "build:android": "eas build -p android",
+    "build:android:local": "eas build -p android --local",
+    "build:android:apk": "eas build -p android --profile preview",
+    "prebuild:android": "npx expo prebuild --platform android",
+    "build:android:local-apk": "cd android && ./gradlew assembleRelease",
+    "build:web": "npx expo export -p web",
+    "preview:web": "npx serve dist"
   },
   "lint-staged": {
    "src/**/*.{ts,tsx,js,jsx}": [
