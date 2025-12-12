@@ -6,7 +6,9 @@ const config: StorybookConfig = {
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
   "addons": [
-    "@storybook/addon-docs"
+    // '@storybook/addon-ondevice-actions',
+    // '@storybook/addon-ondevice-controls',
+    // '@storybook/addon-ondevice-backgrounds',
   ],
   "framework": {
     "name": "@storybook/react-native-web-vite",
