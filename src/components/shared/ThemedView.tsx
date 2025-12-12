@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, ViewProps, StyleSheet } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ThemedViewProps extends ViewProps {
   background?: 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'surface' | 'card';
@@ -33,14 +34,15 @@ export const ThemedView: React.FC<ThemedViewProps> = ({
   };
 
   return (
-    <View
-      style={[
-        { backgroundColor: getBackgroundColor() },
-        style,
-      ]}
-      {...props}
-    >
-      {children}
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: getBackgroundColor() }}>
+      <View
+        style={[
+          style,
+        ]}
+        {...props}
+      >
+        {children}
+      </View>
+    </SafeAreaView>
   );
 };
