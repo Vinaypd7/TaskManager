@@ -1,0 +1,58 @@
+import { useState, useEffect, useCallback } from 'react';
+import { User } from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authService } from '../services/authService';
+import { StorageKeysEnum } from '../constants/storageKeys';
+import { ROLES } from '../constants/config';
+
+export const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStoredUser();
+  }, []);
+
+  const loadStoredUser = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem(StorageKeysEnum.USER_SESSION);
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error('Failed to load user session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = useCallback(async (email: string, password: string) => {
+    try {
+      const userData = await authService.login(email, password);
+      setUser(userData);
+      await AsyncStorage.setItem(StorageKeysEnum.USER_SESSION, JSON.stringify(userData));
+      return userData;
+    } catch (error) {
+      throw error;
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await authService.logout();
+      setUser(null);
+      await AsyncStorage.removeItem(StorageKeysEnum.USER_SESSION);
+    } catch (error) {
+      console.error('Failed to logout:', error);
+    }
+  }, []);
+
+  return {
+    user,
+    login,
+    logout,
+    loading,
+    isAuthenticated: !!user,
+    isAdmin: user?.role === ROLES.ADMIN,
+  };
+};
