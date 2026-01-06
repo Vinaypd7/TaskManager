@@ -9,6 +9,7 @@ import { TasksScreen } from '../screens/TasksScreen';
 import { SignInScreen } from '../screens/SignInScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { TaskDetailsScreen } from '../screens/TaskDetailsScreen';
+import { ROLES } from '../constants/config';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -28,7 +29,7 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Tasks" component={TasksScreen} />
-      {user.role === 'ROLE_ADMIN' && (
+      {user.role === ROLES.ADMIN && (
         <Tab.Screen name="Errors" component={ErrorsScreen} />
       )}
       <Tab.Screen name="Profile" component={ProfileScreen} />
