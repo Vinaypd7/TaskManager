@@ -7,7 +7,15 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import { ButtonProps } from '../../types';
+
+interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
+  style?: any;
+  testID?: string;
+}
 
 export const Button: React.FC<ButtonProps> = ({
   title,
