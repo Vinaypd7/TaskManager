@@ -3,8 +3,7 @@ import { Task, PaginationParams, SortParams, FilterParams } from '../types';
 import { useAuth } from './useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { taskService } from '../services/taskService';
-
-const FILTERS_STORAGE_KEY = 'task_filters';
+import { StorageKeysEnum } from '../constants/storageKeys';
 
 export const useTasks = () => {
   const { user } = useAuth();
@@ -27,7 +26,7 @@ export const useTasks = () => {
 
   const loadStoredFilters = async () => {
     try {
-      const storedFilters = await AsyncStorage.getItem(FILTERS_STORAGE_KEY);
+      const storedFilters = await AsyncStorage.getItem(StorageKeysEnum.FILTERS_STORAGE_KEY);
       if (storedFilters) {
         setFilters(JSON.parse(storedFilters));
       }
@@ -38,7 +37,7 @@ export const useTasks = () => {
 
   const saveFilters = async (newFilters: FilterParams) => {
     try {
-      await AsyncStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
+      await AsyncStorage.setItem(StorageKeysEnum.FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
     } catch (error) {
       console.error('Failed to save filters:', error);
     }

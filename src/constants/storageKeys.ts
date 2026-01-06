@@ -5,4 +5,5 @@
  */
 export enum StorageKeysEnum {
   USER_SESSION = 'user_session',
+  FILTERS_STORAGE_KEY = 'task_filters',
 }
