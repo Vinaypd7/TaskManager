@@ -1,4 +1,5 @@
 import { User } from "../types";
+import { ROLES } from "../constants/config";
 
 /**
  * authService
@@ -16,14 +17,14 @@ export const authService = {
       return {
         id: "1",
         email: "admin@taskmanager.com",
-        role: "ROLE_ADMIN",
+        role: ROLES.ADMIN,
         name: "Admin User",
       };
     } else if (email === "user@taskmanager.com" && password === "user123") {
       return {
         id: "2",
         email: "user@taskmanager.com",
-        role: "ROLE_MEMBER",
+        role: ROLES.MEMBER,
         name: "Regular User",
       };
     }

@@ -1,8 +1,8 @@
+import { UserRole } from "../types";
+
 export const PAGINATION_CONFIG = {
   ITEMS_PER_PAGE: 5,
-} as const;
+};
 
-export const ROLES = {
-  MEMBER: "ROLE_MEMBER",
-  ADMIN: "ROLE_ADMIN",
-} as const;
+// Re-export enum from types for convenience in runtime code
+export const ROLES = UserRole;

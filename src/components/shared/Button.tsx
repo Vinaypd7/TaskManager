@@ -6,9 +6,25 @@ import {
   Platform,
   StyleSheet,
 } from "react-native";
-import { ButtonProps } from "../../types";
 import { useTheme } from "../../contexts/ThemeContext";
 import { ThemedText } from "./ThemedText";
+
+interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  variant?: "primary" | "secondary";
+  disabled?: boolean;
+  style?: Record<string, unknown>;
+  testID?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityRole?: "button" | "link" | "togglebutton";
+  accessibilityState?: {
+    disabled?: boolean;
+    selected?: boolean;
+    checked?: boolean;
+  };
+}
 
 /**
  * Button

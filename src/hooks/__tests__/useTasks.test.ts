@@ -5,37 +5,27 @@ import { createTask } from "../../__tests__/__factories__/taskFactory";
 import { createUser } from "../../__tests__/__factories__/userFactory";
 import React from "react";
 
-// Mock the auth context
-const mockAuthValue = {
-  user: null,
-  login: jest.fn(),
-  logout: jest.fn(),
+// Mock the useAuth hook
+const mockUseAuth = {
+  user: null as any,
   loading: false,
   isAuthenticated: false,
   isAdmin: false,
 };
 
-jest.mock("../../contexts/AuthContext", () => {
-  const React = require("react");
-  const { createContext } = React;
-  const AuthContext = createContext(mockAuthValue);
-
-  return {
-    AuthContext,
-    AuthProvider: ({ children }: { children: React.ReactNode }) => children,
-    useAuthContext: () => mockAuthValue,
-  };
-});
+jest.mock("../useAuth", () => ({
+  useAuth: jest.fn(() => mockUseAuth),
+}));
 
 describe("useTasks", () => {
   beforeEach(() => {
     AsyncStorage.clear();
     jest.clearAllMocks();
-    // Reset mock auth value
-    mockAuthValue.user = null;
-    mockAuthValue.loading = false;
-    mockAuthValue.isAuthenticated = false;
-    mockAuthValue.isAdmin = false;
+    // Reset mock useAuth value
+    mockUseAuth.user = null;
+    mockUseAuth.loading = false;
+    mockUseAuth.isAuthenticated = false;
+    mockUseAuth.isAdmin = false;
   });
 
   const wrapper = ({ children }: { children: React.ReactNode }) => {
@@ -47,8 +37,8 @@ describe("useTasks", () => {
     const task = createTask({ userId: "user-1" });
     await AsyncStorage.setItem("user_tasks", JSON.stringify([task]));
 
-    mockAuthValue.user = user;
-    mockAuthValue.isAuthenticated = true;
+    mockUseAuth.user = user;
+    mockUseAuth.isAuthenticated = true;
 
     const { result } = renderHook(() => useTasks(), { wrapper });
 
@@ -61,8 +51,8 @@ describe("useTasks", () => {
 
   it("should add task", async () => {
     const user = createUser({ id: "user-1" });
-    mockAuthValue.user = user;
-    mockAuthValue.isAuthenticated = true;
+    mockUseAuth.user = user;
+    mockUseAuth.isAuthenticated = true;
 
     const { result } = renderHook(() => useTasks(), { wrapper });
 
@@ -84,8 +74,8 @@ describe("useTasks", () => {
     const task = createTask({ id: "task-1", userId: "user-1" });
     await AsyncStorage.setItem("user_tasks", JSON.stringify([task]));
 
-    mockAuthValue.user = user;
-    mockAuthValue.isAuthenticated = true;
+    mockUseAuth.user = user;
+    mockUseAuth.isAuthenticated = true;
 
     const { result } = renderHook(() => useTasks(), { wrapper });
 
@@ -111,8 +101,8 @@ describe("useTasks", () => {
     });
     await AsyncStorage.setItem("user_tasks", JSON.stringify([task]));
 
-    mockAuthValue.user = user;
-    mockAuthValue.isAuthenticated = true;
+    mockUseAuth.user = user;
+    mockUseAuth.isAuthenticated = true;
 
     const { result } = renderHook(() => useTasks(), { wrapper });
 
@@ -143,8 +133,8 @@ describe("useTasks", () => {
     });
     await AsyncStorage.setItem("user_tasks", JSON.stringify([task1, task2]));
 
-    mockAuthValue.user = user;
-    mockAuthValue.isAuthenticated = true;
+    mockUseAuth.user = user;
+    mockUseAuth.isAuthenticated = true;
 
     const { result } = renderHook(() => useTasks(), { wrapper });
 

@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { User } from "../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authService } from "../services/authService";
-
-const AUTH_STORAGE_KEY = "user_session";
+import { StorageKeysEnum } from "../constants/storageKeys";
+import { ROLES } from "../constants/config";
 
 /**
  * useAuth
@@ -22,7 +22,9 @@ export const useAuth = () => {
 
   const loadStoredUser = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      const storedUser = await AsyncStorage.getItem(
+        StorageKeysEnum.USER_SESSION,
+      );
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
@@ -36,7 +38,10 @@ export const useAuth = () => {
   const login = useCallback(async (email: string, password: string) => {
     const userData = await authService.login(email, password);
     setUser(userData);
-    await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
+    await AsyncStorage.setItem(
+      StorageKeysEnum.USER_SESSION,
+      JSON.stringify(userData),
+    );
     return userData;
   }, []);
 
@@ -44,7 +49,7 @@ export const useAuth = () => {
     try {
       await authService.logout();
       setUser(null);
-      await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+      await AsyncStorage.removeItem(StorageKeysEnum.USER_SESSION);
     } catch (error) {
       console.error("Failed to logout:", error);
     }
@@ -56,6 +61,6 @@ export const useAuth = () => {
     logout,
     loading,
     isAuthenticated: !!user,
-    isAdmin: user?.role === "ROLE_ADMIN",
+    isAdmin: user?.role === ROLES.ADMIN,
   };
 };

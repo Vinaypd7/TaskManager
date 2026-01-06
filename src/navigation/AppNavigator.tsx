@@ -10,6 +10,7 @@ import { SignInScreen } from "../screens/SignInScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { TaskDetailsScreen } from "../screens/TaskDetailsScreen";
 import { Ionicons } from "@expo/vector-icons";
+import { ROLES } from "../constants/config";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -63,7 +64,7 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Tasks" component={TasksScreen} />
-      {user.role === "ROLE_ADMIN" && (
+      {user.role === ROLES.ADMIN && (
         <Tab.Screen name="Errors" component={ErrorsScreen} />
       )}
       <Tab.Screen name="Profile" component={ProfileScreen} />
